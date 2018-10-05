@@ -15,12 +15,14 @@
   <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
     attribute vec4 aColor;
+    uniform mat4 uTMatrix;
+    uniform mat4 uWMatrix;
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
     varying vec4 vColor;
     void main(void) {
       vColor = aColor;
-      gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+      gl_Position = uPMatrix * uMVMatrix * uWMatrix * uTMatrix * vec4(aVertexPosition, 1.0);
     }
   </script>
   <script id="shader-fs" type="x-shader/x-fragment">
@@ -33,6 +35,13 @@
     }
   </script>
   <script type="text/javascript">
+    // Parameters of the Application
+    const NSPIKES = 10; // Number of spikes
+    const SMIN = 0.6;   // Minimum scale
+    const SMAX = 1.1;   // Maximum scale
+    var s = 1           // Actual scale
+    var ds = 0.0075     // How much the scale is change each ticks
+    
     // Scene
     var vertexBuffer = undefined;
     var indexBuffer  = undefined;
@@ -45,49 +54,101 @@
     // Camera
     var mvMatrix = mat4.create(); // Model-View matrix
     var pMatrix  = mat4.create(); // projection matrix
-
+    
+    // transformations matrix
+    var wMatrix = mat4.create();  // Apply to whole world
+    var tMatrix = mat4.create();  // Used to move elements before drawing
+    
     function initShaderParameters(prg)
     {
       prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
       glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
       prg.colorAttribute 			= glContext.getAttribLocation(prg, "aColor");
       glContext.enableVertexAttribArray(prg.colorAttribute);
+      prg.tMatrixUniform          = glContext.getUniformLocation(prg, 'uTMatrix');
+      prg.wMatrixUniform          = glContext.getUniformLocation(prg, 'uWMatrix');
       prg.pMatrixUniform          = glContext.getUniformLocation(prg, 'uPMatrix');
       prg.mvMatrixUniform         = glContext.getUniformLocation(prg, 'uMVMatrix');
     }
 
     function initBuffers()
-    {
-      vertices.push(Math.sqrt(8/9), 0, -1/3);
-      vertices.push(-Math.sqrt(2/9), Math.sqrt(2/3), -1/3);
-      vertices.push(-Math.sqrt(2/9), -Math.sqrt(2/3), -1/3);
-      vertices.push(0, 0, 1);
-      colors.push(1.0, 0.0, 0.0, 1.0);
-      colors.push(0.0, 1.0, 0.0, 1.0);
-      colors.push(0.0, 0.0, 1.0, 1.0);
-      colors.push(1.0, 1.0, 1.0, 1.0);
-      indices.push(3,0,1,2,0,1);
+    { 
+      //spiky squared pyramide
+      vertices.push(0,1.3,0);
+      vertices.push(0.2,0.3,0.2);
+      vertices.push(-0.2,0.3,0.2);
+      vertices.push(-0.2,0.3,-0.2);
+      vertices.push(0.2,0.3,-0.2);
+      let orange = 165/255;
+      colors.push(1.0, 1.0, 0.0, 1.0);
+      colors.push(1.0, orange, 0.0, 1.0);
+      colors.push(1.0, orange, 0.0, 1.0);
+      colors.push(1.0, orange, 0.0, 1.0);
+      colors.push(1.0, orange, 0.0, 1.0);
+      indices.push(
+        0,1,2,
+        0,2,3,
+        0,3,4,
+        0,4,1,
+        1,2,3,
+        1,3,4
+      );
+
       vertexBuffer = getVertexBufferWithVertices(vertices);
       colorBuffer  = getVertexBufferWithVertices(colors);
       indexBuffer  = getIndexBufferWithIndices(indices);
     }
-
+    
     function drawScene()
     {
-      glContext.clearColor(0.9, 0.9, 0.9, 1.0);
+      glContext.clearColor(0.1, 0.1, 0.1, 1.0);
       glContext.enable(glContext.DEPTH_TEST);
       glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
       glContext.viewport(0, 0, c_width, c_height);
-      mat4.identity(pMatrix);
-      mat4.identity(mvMatrix);
-      glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
+      
+      mat4.perspective(pMatrix, degToRad(90), c_width / c_height, 0.1, 1000.0); // champ de vision de 60° commençant à 0.1 de la camera et jusqu'à 1000
+      
+      mat4.lookAt(mvMatrix, [0,0,-3], [0,0,0], [0,1,0]); // regarde depuis -2 en profondeur vers 0,0,0 et avec y positif en haut de l'écran
+
+      let angle = performance.now() / 1000 / 6 * Math.PI;
+      mat4.rotate(wMatrix, mat4.create(), angle, [1,0,1]); // rotation of the shape
+
+      glContext.uniformMatrix4fv(prg.wMatrixUniform, false, wMatrix);
       glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
+      glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
+
       glContext.bindBuffer(glContext.ARRAY_BUFFER, vertexBuffer);
       glContext.vertexAttribPointer(prg.vertexPositionAttribute, 3, glContext.FLOAT, false, 0, 0);
       glContext.bindBuffer(glContext.ARRAY_BUFFER, colorBuffer);
       glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
       glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, indexBuffer);
-      glContext.drawElements(glContext.TRIANGLE_FAN, indices.length, glContext.UNSIGNED_SHORT,0);
+      
+      // Drawing of the Star
+      for(let i=0;i<NSPIKES;i++)
+      {
+        drawSpike(Math.PI/NSPIKES*2*i, [ 0,0, 1], s);
+        drawSpike(Math.PI/NSPIKES*2*i, [ 1,0, 0], s);
+        drawSpike(Math.PI/NSPIKES*2*i, [ 1,0, 1], s);
+        drawSpike(Math.PI/NSPIKES*2*i, [-1,0,-1], s);
+        drawSpike(Math.PI/NSPIKES*2*i, [-1,0, 1], s);
+        drawSpike(Math.PI/NSPIKES*2*i, [ 1,0,-1], s);
+      }
+      s += ds;
+      if(s <= SMIN || s >= SMAX)
+      {
+        ds = -ds;
+      }
+    }
+    
+    //Draw a Spike somewhere around the origin
+    function drawSpike(angle, direction, scale=1)
+    {
+      mat4.fromRotation(tMatrix, angle, direction);
+      let scaleMatrix = mat4.create();
+      mat4.scale(scaleMatrix, scaleMatrix, [1, scale, 1])
+      mat4.multiply(tMatrix, tMatrix, scaleMatrix)
+      glContext.uniformMatrix4fv(prg.tMatrixUniform, false, tMatrix);
+      glContext.drawElements(glContext.TRIANGLES, indices.length, glContext.UNSIGNED_SHORT, 0);
     }
 
     function initWebGL()
