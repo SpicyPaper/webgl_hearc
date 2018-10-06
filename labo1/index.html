@@ -12,6 +12,7 @@
   <script src="js/commonFunctions.js"></script>
   <script src="js/gl-matrix-min.js"></script>
   <script src="js/webglTools.js"></script>
+  <script src="js/spike.js"></script>
   <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
     attribute vec4 aColor;
@@ -36,12 +37,13 @@
   </script>
   <script type="text/javascript">
     // Parameters of the Application
-    const NSPIKES = 10; // Number of spikes
-    const SMIN = 0.6;   // Minimum scale
-    const SMAX = 1.1;   // Maximum scale
-    var s = 1           // Actual scale
-    var ds = 0.0075     // How much the scale is change each ticks
-    
+    const NSPIKES = 15;  // Number of spikes
+    const SMIN = 0.6;    // Minimum scale
+    const SMAX = 1;      // Maximum scale
+    const DSMIN = 0.005; // Min rate of change
+    const DSMAX = 0.010; // Max rate of change
+    var spikes = [];     // Array of spikes
+
     // Scene
     var vertexBuffer = undefined;
     var indexBuffer  = undefined;
@@ -54,16 +56,16 @@
     // Camera
     var mvMatrix = mat4.create(); // Model-View matrix
     var pMatrix  = mat4.create(); // projection matrix
-    
+
     // transformations matrix
     var wMatrix = mat4.create();  // Apply to whole world
     var tMatrix = mat4.create();  // Used to move elements before drawing
-    
+
     function initShaderParameters(prg)
     {
       prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
       glContext.enableVertexAttribArray(prg.vertexPositionAttribute);
-      prg.colorAttribute 			= glContext.getAttribLocation(prg, "aColor");
+      prg.colorAttribute 			    = glContext.getAttribLocation(prg, "aColor");
       glContext.enableVertexAttribArray(prg.colorAttribute);
       prg.tMatrixUniform          = glContext.getUniformLocation(prg, 'uTMatrix');
       prg.wMatrixUniform          = glContext.getUniformLocation(prg, 'uWMatrix');
@@ -72,19 +74,22 @@
     }
 
     function initBuffers()
-    { 
+    {
       //spiky squared pyramide
       vertices.push(0,1.3,0);
       vertices.push(0.2,0.3,0.2);
       vertices.push(-0.2,0.3,0.2);
       vertices.push(-0.2,0.3,-0.2);
       vertices.push(0.2,0.3,-0.2);
+
       let orange = 165/255;
+
       colors.push(1.0, 1.0, 0.0, 1.0);
       colors.push(1.0, orange, 0.0, 1.0);
       colors.push(1.0, orange, 0.0, 1.0);
       colors.push(1.0, orange, 0.0, 1.0);
       colors.push(1.0, orange, 0.0, 1.0);
+
       indices.push(
         0,1,2,
         0,2,3,
@@ -97,17 +102,68 @@
       vertexBuffer = getVertexBufferWithVertices(vertices);
       colorBuffer  = getVertexBufferWithVertices(colors);
       indexBuffer  = getIndexBufferWithIndices(indices);
+
+      createSpikes();
     }
-    
+
+    function createSpikes()
+    {
+      for(let i = 0; i < NSPIKES; i++)
+      {
+        spikes.push(
+          new Spike(
+            Math.PI / NSPIKES * 2 * i,
+            [ 0, 0, 1],
+            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
+            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
+          ));
+        spikes.push(
+          new Spike(
+            Math.PI / NSPIKES * 2 * i,
+            [ 1, 0, 0],
+            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
+            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
+          ));
+        spikes.push(
+          new Spike(
+            Math.PI / NSPIKES * 2 * i,
+            [ 1, 0, 1],
+            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
+            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
+          ));
+        spikes.push(
+          new Spike(
+            Math.PI / NSPIKES * 2 * i,
+            [-1, 0,-1],
+            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
+            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
+          ));
+        spikes.push(
+          new Spike(
+            Math.PI / NSPIKES * 2 * i,
+            [-1, 0, 1],
+            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
+            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
+          ));
+        spikes.push(
+          new Spike(
+            Math.PI / NSPIKES * 2 * i,
+            [ 1, 0,-1],
+            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
+            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
+          ));
+      }
+    }
+
     function drawScene()
     {
       glContext.clearColor(0.1, 0.1, 0.1, 1.0);
       glContext.enable(glContext.DEPTH_TEST);
       glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
       glContext.viewport(0, 0, c_width, c_height);
-      
+
       mat4.perspective(pMatrix, degToRad(90), c_width / c_height, 0.1, 1000.0); // champ de vision de 60° commençant à 0.1 de la camera et jusqu'à 1000
-      
+
       mat4.lookAt(mvMatrix, [0,0,-3], [0,0,0], [0,1,0]); // regarde depuis -2 en profondeur vers 0,0,0 et avec y positif en haut de l'écran
 
       let angle = performance.now() / 1000 / 6 * Math.PI;
@@ -122,33 +178,12 @@
       glContext.bindBuffer(glContext.ARRAY_BUFFER, colorBuffer);
       glContext.vertexAttribPointer(prg.colorAttribute, 4, glContext.FLOAT, false, 0, 0);
       glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, indexBuffer);
-      
-      // Drawing of the Star
-      for(let i=0;i<NSPIKES;i++)
+
+      for(let i = 0; i < spikes.length; i++)
       {
-        drawSpike(Math.PI/NSPIKES*2*i, [ 0,0, 1], s);
-        drawSpike(Math.PI/NSPIKES*2*i, [ 1,0, 0], s);
-        drawSpike(Math.PI/NSPIKES*2*i, [ 1,0, 1], s);
-        drawSpike(Math.PI/NSPIKES*2*i, [-1,0,-1], s);
-        drawSpike(Math.PI/NSPIKES*2*i, [-1,0, 1], s);
-        drawSpike(Math.PI/NSPIKES*2*i, [ 1,0,-1], s);
+        spikes[i].update();
+        spikes[i].draw();
       }
-      s += ds;
-      if(s <= SMIN || s >= SMAX)
-      {
-        ds = -ds;
-      }
-    }
-    
-    //Draw a Spike somewhere around the origin
-    function drawSpike(angle, direction, scale=1)
-    {
-      mat4.fromRotation(tMatrix, angle, direction);
-      let scaleMatrix = mat4.create();
-      mat4.scale(scaleMatrix, scaleMatrix, [1, scale, 1])
-      mat4.multiply(tMatrix, tMatrix, scaleMatrix)
-      glContext.uniformMatrix4fv(prg.tMatrixUniform, false, tMatrix);
-      glContext.drawElements(glContext.TRIANGLES, indices.length, glContext.UNSIGNED_SHORT, 0);
     }
 
     function initWebGL()
