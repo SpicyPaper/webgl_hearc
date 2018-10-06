@@ -37,11 +37,11 @@
   </script>
   <script type="text/javascript">
     // Parameters of the Application
-    const NSPIKES = 15;  // Number of spikes
+    const NSPIKES = 10;  // Number of spikes
     const SMIN = 0.6;    // Minimum scale
     const SMAX = 1;      // Maximum scale
-    const DSMIN = 0.005; // Min rate of change
-    const DSMAX = 0.010; // Max rate of change
+    const DSMIN = 0.006; // Min rate of change
+    const DSMAX = 0.007; // Max rate of change
     var spikes = [];     // Array of spikes
 
     // Scene
@@ -131,27 +131,6 @@
             Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
             Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
           ));
-        spikes.push(
-          new Spike(
-            Math.PI / NSPIKES * 2 * i,
-            [-1, 0,-1],
-            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
-            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
-          ));
-        spikes.push(
-          new Spike(
-            Math.PI / NSPIKES * 2 * i,
-            [-1, 0, 1],
-            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
-            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
-          ));
-        spikes.push(
-          new Spike(
-            Math.PI / NSPIKES * 2 * i,
-            [ 1, 0,-1],
-            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
-            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
-          ));
       }
     }
 
@@ -167,7 +146,7 @@
       mat4.lookAt(mvMatrix, [0,0,-3], [0,0,0], [0,1,0]); // regarde depuis -2 en profondeur vers 0,0,0 et avec y positif en haut de l'écran
 
       let angle = performance.now() / 1000 / 6 * Math.PI;
-      mat4.rotate(wMatrix, mat4.create(), angle, [1,0,1]); // rotation of the shape
+      mat4.rotate(wMatrix, mat4.create(), angle, [1, 0, 1]); // rotation of the shape
 
       glContext.uniformMatrix4fv(prg.wMatrixUniform, false, wMatrix);
       glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
