@@ -9,7 +9,6 @@
       Your Browser does not support HTML5.
     </canvas>
   </body>
-  <script src="js/commonFunctions.js"></script>
   <script src="js/gl-matrix-min.js"></script>
   <script src="js/webglTools.js"></script>
   <script src="js/spike.js"></script>
@@ -37,7 +36,7 @@
   </script>
   <script type="text/javascript">
     // Parameters of the Application
-    const NSPIKES = 10;  // Number of spikes
+    const NSPIKES = 40;  // Number of spikes
     const SMIN = 0.6;    // Minimum scale
     const SMAX = 1;      // Maximum scale
     const DSMIN = 0.006; // Min rate of change
@@ -82,13 +81,12 @@
       vertices.push(-0.2,0.3,-0.2);
       vertices.push(0.2,0.3,-0.2);
 
-      let orange = 165/255;
-
+      let orange = [1.0, 165./255, 0.0, 1.0];
       colors.push(1.0, 1.0, 0.0, 1.0);
-      colors.push(1.0, orange, 0.0, 1.0);
-      colors.push(1.0, orange, 0.0, 1.0);
-      colors.push(1.0, orange, 0.0, 1.0);
-      colors.push(1.0, orange, 0.0, 1.0);
+      colors.push(...orange.slice());
+      colors.push(...orange.slice());
+      colors.push(...orange.slice());
+      colors.push(...orange.slice());
 
       indices.push(
         0,1,2,
@@ -108,36 +106,23 @@
 
     function createSpikes()
     {
-      for(let i = 0; i < NSPIKES; i++)
+      let directions=[
+        [ 0, 0, 1],
+        [ 1, 0, 0],
+        [ 1, 0, 1]
+      ];
+      for(let i = 0; i < NSPIKES/directions.length; i++)
       {
-        spikes.push(
-          new Spike(
-            Math.PI / NSPIKES * 2 * i,
-            [ 0, 0, 1],
-            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
-            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
-          ));
-        spikes.push(
-          new Spike(
-            Math.PI / NSPIKES * 2 * i,
-            [ 1, 0, 0],
-            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
-            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
-          ));
-        spikes.push(
-          new Spike(
-            Math.PI / NSPIKES * 2 * i,
-            [ 1, 0, 1],
-            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
-            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
-          ));
-        spikes.push(
-          new Spike(
-            Math.PI / NSPIKES * 2 * i,
-            [ 1, 0, -1],
-            Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
-            Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
-          ));
+    		directions.forEach((elt)=>{
+          spikes.push(
+    			  new Spike(
+      				Math.PI / NSPIKES*directions.length * 2 * i,
+      				elt,
+      				Math.floor(Math.random() * SMAX * 10) / 10 + SMIN,
+      				Math.floor(Math.random() * DSMAX * 1000) / 1000 + DSMIN
+      			)
+          );
+    		});
       }
     }
 
