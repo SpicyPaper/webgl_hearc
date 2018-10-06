@@ -109,7 +109,8 @@
       let directions=[
         [ 0, 0, 1],
         [ 1, 0, 0],
-        [ 1, 0, 1]
+        [ 1, 0, 1],
+        [ 1, 0,-1]
       ];
       for(let i = 0; i < NSPIKES/directions.length; i++)
       {
@@ -133,9 +134,9 @@
       glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
       glContext.viewport(0, 0, c_width, c_height);
 
-      mat4.perspective(pMatrix, degToRad(90), c_width / c_height, 0.1, 1000.0); // champ de vision de 60° commençant à 0.1 de la camera et jusqu'à 1000
+      mat4.perspective(pMatrix, degToRad(90), c_width / c_height, 0.1, 1000.0); // champ de vision de 90° commençant à 0.1 de la camera et jusqu'à 1000
 
-      mat4.lookAt(mvMatrix, [0,0,-3], [0,0,0], [0,1,0]); // regarde depuis -2 en profondeur vers 0,0,0 et avec y positif en haut de l'écran
+      mat4.lookAt(mvMatrix, [0,0,-3], [0,0,0], [0,1,0]); // regarde depuis -3 en profondeur vers 0,0,0 et avec y positif en haut de l'écran
 
       let angle = performance.now() / 1000 / 6 * Math.PI;
       mat4.rotate(wMatrix, mat4.create(), angle, [1, 0, 1]); // rotation of the shape
