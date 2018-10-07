@@ -39,8 +39,8 @@
     const NSPIKES = 40;  // Number of spikes
     const SMIN = 0.6;    // Minimum scale
     const SMAX = 1;      // Maximum scale
-    const DSMIN = 0.006; // Min rate of change
-    const DSMAX = 0.007; // Max rate of change
+    const DSMIN = 0.003; // Min rate of change
+    const DSMAX = 0.005; // Max rate of change
     var spikes = [];     // Array of spikes
 
     // Scene
@@ -92,9 +92,7 @@
         0,1,2,
         0,2,3,
         0,3,4,
-        0,4,1,
-        1,2,3,
-        1,3,4
+        0,4,1
       );
 
       vertexBuffer = getVertexBufferWithVertices(vertices);
