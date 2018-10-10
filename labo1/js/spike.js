@@ -19,7 +19,7 @@ class Spike
 	  mat4.multiply(tMatrix, tMatrix, scaleMatrix);
 
 	  glContext.uniformMatrix4fv(prg.tMatrixUniform, false, tMatrix);
-	  glContext.drawElements(glContext.TRIANGLES, indices.length, glContext.UNSIGNED_SHORT, 0);
+	  glContext.drawElements(glContext.TRIANGLE_FAN, indices.length, glContext.UNSIGNED_SHORT, 0);
 	}
 
   update()
