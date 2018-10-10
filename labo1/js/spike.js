@@ -1,9 +1,9 @@
 class Spike
 {
-  constructor(angle, direction, scale = 1, ds = 0.0075)
+  constructor(xRotate, zRotate, scale = 1, ds = 0.0075)
   {
-    this.angle = angle;
-    this.direction = direction;
+    this.xRotate = xRotate;
+    this.zRotate = zRotate;
     this.scale = scale;
     this.ds = ds;
   }
@@ -11,7 +11,8 @@ class Spike
 	//Draw a Spike somewhere around the origin
 	draw()
 	{
-	  mat4.fromRotation(tMatrix, this.angle, this.direction);
+    mat4.fromZRotation(tMatrix, this.xRotate);
+    mat4.rotateX(tMatrix, tMatrix, this.zRotate);
 
 	  let scaleMatrix = mat4.create();
 	  mat4.scale(scaleMatrix, scaleMatrix, [1, this.scale, 1]);
