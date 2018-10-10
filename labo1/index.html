@@ -75,11 +75,11 @@
     function initBuffers()
     {
       //spiky squared pyramide
-      vertices.push(0,1.3,0);
-      vertices.push(0.2,0,0.2);
-      vertices.push(-0.2,0,0.2);
-      vertices.push(-0.2,0,-0.2);
-      vertices.push(0.2,0,-0.2);
+      vertices.push(  0.0, 1.3,  0);
+      vertices.push(  0.2, 0.2,  0.2);
+      vertices.push( -0.2, 0.2,  0.2);
+      vertices.push( -0.2, 0.2, -0.2);
+      vertices.push(  0.2, 0.2, -0.2);
 
       let orange = [1.0, 165./255, 0.0, 1.0];
       colors.push(1.0, 1.0, 0.0, 1.0);
@@ -88,7 +88,7 @@
       colors.push(...orange.slice());
       colors.push(...orange.slice());
 
-      indices.push(0, 1, 2, 3, 4);
+      indices.push(0, 1, 2, 3, 4, 1);
 
       vertexBuffer = getVertexBufferWithVertices(vertices);
       colorBuffer  = getVertexBufferWithVertices(colors);
