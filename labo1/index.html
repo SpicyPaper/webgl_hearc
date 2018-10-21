@@ -11,6 +11,16 @@
     <canvas id="webgl-canvas" width="500" height="500">
       Your Browser does not support HTML5.
     </canvas>
+    <div style="display: inline-block; vertical-align: top; margin: 20px;">
+    <input id="backgroundColorPicker" name="Color Picker" value="#1a1a1a" type="color" style="margin-right: 10px;"/>
+      Canvas color
+      <br><br>
+      <input id="starFirstColorPicker" name="Color Picker" value="#ffff00" type="color" style="margin-right: 10px;"/>
+      Star first color
+      <br><br>
+      <input id="starSecondColorPicker" name="Color Picker" value="#ff0000" type="color" style="margin-right: 10px;"/>
+      Star second color
+    </div>
   </body>
   <script src="js/gl-matrix-min.js"></script>
   <script src="js/webglTools.js"></script>
@@ -38,6 +48,11 @@
     }
   </script>
   <script type="text/javascript">
+    // Event listener, call a specific function when a change occurs on a colors picker
+    starFirstColorPicker.addEventListener("change", starFirstColorChange, false);
+    starSecondColorPicker.addEventListener("change", starSecondColorChange, false);
+    backgroundColorPicker.addEventListener("change", backgroundColorChange, false);
+
     // Parameters of the Application
     const SQUARENSPIKESBY2 = 10;  // Square Number of spikes /2 => SQUARENSPIKESBY2 = SquareRoot(nbSpikes)/2 -> 5 => 100
     const SMIN = 0.6;    // Minimum scale
@@ -63,6 +78,10 @@
     var wMatrix = mat4.create();  // Apply to whole world
     var tMatrix = mat4.create();  // Used to move elements before drawing
 
+    var starFirstColor = [1.0, 1.0, 0.0];
+    var starSecondColor = [1.0, 0.0, 0.0];
+    var backgroundColor = [0.1, 0.1, 0.1];
+
     function initShaderParameters(prg)
     {
       prg.vertexPositionAttribute = glContext.getAttribLocation(prg, "aVertexPosition");
@@ -84,17 +103,11 @@
       vertices.push( -0.2, 0.2, -0.2);
       vertices.push(  0.2, 0.2, -0.2);
 
-      let red = [1.0, 0.0, 0.0, 1.0];
-      colors.push(1.0, 1.0, 0.0, 1.0);
-      colors.push(...red.slice());
-      colors.push(...red.slice());
-      colors.push(...red.slice());
-      colors.push(...red.slice());
-
       indices.push(0, 1, 2, 3, 4, 1);
 
+      resetColors();
+
       vertexBuffer = getVertexBufferWithVertices(vertices);
-      colorBuffer  = getVertexBufferWithVertices(colors);
       indexBuffer  = getIndexBufferWithIndices(indices);
 
       createSpikes();
@@ -125,9 +138,56 @@
       }
     }
 
+    // Reset the colors arrays with new colors
+    function resetColors()
+    {
+      colors = [];
+
+      colors.push(...starFirstColor.slice(), 1.0);
+      colors.push(...starSecondColor.slice(), 1.0);
+      colors.push(...starSecondColor.slice(), 1.0);
+      colors.push(...starSecondColor.slice(), 1.0);
+      colors.push(...starSecondColor.slice(), 1.0);
+
+      colorBuffer  = getVertexBufferWithVertices(colors);
+    }
+
+    // Change the first color of the spikes
+    function starFirstColorChange(event)
+    {
+      starFirstColor = colorHexToPercentage(event.target.value);
+
+      resetColors();
+    }
+
+    // Change the second color of the spikes
+    function starSecondColorChange(event)
+    {
+      starSecondColor = colorHexToPercentage(event.target.value);
+
+      resetColors();
+    }
+
+    function backgroundColorChange(event)
+    {
+      backgroundColor = colorHexToPercentage(event.target.value);
+    }
+
+    // Convert a color from hex to a percentage (0.0 - 1.0)
+    function colorHexToPercentage(hexColor)
+    {
+      hexColor = hexColor.substring(1, hexColor.length);
+
+      let red = parseInt(hexColor.substring(0, 2), 16) / 255;
+      let green = parseInt(hexColor.substring(2, 4), 16) / 255;
+      let blue = parseInt(hexColor.substring(4, 6), 16) / 255;
+
+      return [red, green, blue];
+    }
+
     function drawScene()
     {
-      glContext.clearColor(0.1, 0.1, 0.1, 1.0);
+      glContext.clearColor(...backgroundColor.slice(), 1.0);
       glContext.enable(glContext.DEPTH_TEST);
       glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
       glContext.viewport(0, 0, c_width, c_height);
