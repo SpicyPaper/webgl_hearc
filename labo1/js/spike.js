@@ -8,7 +8,7 @@ class Spike
     this.ds = ds;
   }
 
-	//Draw a Spike somewhere around the origin
+	// Draw a Spike somewhere around the origin
 	draw()
 	{
     mat4.fromZRotation(tMatrix, this.xRotate);
@@ -22,6 +22,7 @@ class Spike
 	  glContext.drawElements(glContext.TRIANGLE_FAN, indices.length, glContext.UNSIGNED_SHORT, 0);
 	}
 
+  // Change the size of the spike every frame with speed ds
   update()
   {
     this.scale += this.ds;
