@@ -20,10 +20,14 @@
       <br><br>
       <input id="starSecondColorPicker" name="Color Picker" value="#ff0000" type="color" style="margin-right: 10px;"/>
       Star second color
+      <br><br>
+      <input type="checkbox" name="autoRotate" value="autoRotate" id="autoRotate" onclick="autoRotate = this.checked" checked>
+      <label for="autoRotate" onselectstart="return false"> Rotation Auto</label>
     </div>
   </body>
   <script src="js/gl-matrix-min.js"></script>
   <script src="js/webglTools.js"></script>
+  <script src="js/mouseMotionHandling.js"></script>
   <script src="js/spike.js"></script>
   <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
@@ -60,6 +64,8 @@
     const DSMIN = 0.003; // Min rate of change
     const DSMAX = 0.005; // Max rate of change
     var spikes = [];     // Array of spikes
+
+    var autoRotate = document.getElementById("autoRotate").checked;
 
     // Scene
     var vertexBuffer = undefined;
@@ -196,8 +202,16 @@
 
       mat4.lookAt(mvMatrix, [0,0,-3], [0,0,0], [0,1,0]); // regarde depuis -3 en profondeur vers 0,0,0 et avec y positif en haut de l'écran
 
-      let angle = performance.now() / 1000 / 6 * Math.PI;
-      mat4.rotate(wMatrix, mat4.create(), angle, [1, 0, 1]); // rotation of the shape
+      mat4.identity(wMatrix);
+      if(autoRotate)
+      {
+        let angle = performance.now() / 1000 / 6 * Math.PI;
+        mat4.rotate(wMatrix, mat4.create(), angle, [1, 0, 1]); // rotation of the shape
+      }
+      else
+      {
+        rotateModelViewMatrixUsingQuaternion();
+      }
 
       glContext.uniformMatrix4fv(prg.wMatrixUniform, false, wMatrix);
       glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
