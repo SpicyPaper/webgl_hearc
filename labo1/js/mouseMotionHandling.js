@@ -7,7 +7,6 @@ var myCanvas = document.getElementById('webgl-canvas');
 myCanvas.onmousemove = handleMouseMove;
 myCanvas.onmousedown = handleMouseDown;
 myCanvas.onmouseup = handleMouseUp;
-myCanvas.onmousewheel = handleMouseWheel;
 
 
 // this variable will tell if the mouse is being moved while pressing the button
@@ -18,16 +17,6 @@ var oldMousePos = {x: 0, y: 0};
 var mousePos;
 var rotSpeed = 2.0; //rotation speed 
 var mouseButton;
-
-
-
-function handleMouseWheel(event){
-    var wheel = event.wheelDelta/120;//n or -n
-
-    zoom += wheel/2;
-}
-
-
 
 
 function handleMouseMove(event) {
