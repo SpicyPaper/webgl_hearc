@@ -15,7 +15,7 @@ var rotX = 0; //rotation on the X-axis (in degrees)
 var dragging = false;
 var oldMousePos = {x: 0, y: 0};
 var mousePos;
-var rotSpeed = 2.0; //rotation speed 
+var rotSpeed = 2.0; //rotation speed
 var mouseButton;
 
 
@@ -27,18 +27,15 @@ function handleMouseMove(event) {
 	  };
 	  if (dragging){
 
-
 		dX = mousePos.x - oldMousePos.x;
 		dY = mousePos.y - oldMousePos.y;
 
 		//console.log((mousePos.x - oldMousePos.x) + ", " + (mousePos.y - oldMousePos.y)); //--- DEBUG LINE ---
 
-
 		rotY += dX > 0 ? rotSpeed : dX < 0 ? -rotSpeed : 0;
 		rotX += dY > 0 ? rotSpeed : dY < 0 ? -rotSpeed : 0;
 		oldMousePos = mousePos;
 	  }
-
 }
 
 function handleMouseDown(event){

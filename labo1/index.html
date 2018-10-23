@@ -10,7 +10,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
-          <h1>Infographie avec GLSL</h1>
+          <h1>Infographie with GLSL - Labo n°1</h1>
           <h2>Authors</h2>
           <p>Equipe n°1 - Octobre 2018</p>
           <p>Donzé Célien - Wermeille Bastien - Wohlfahrt Alexander</p>
@@ -19,13 +19,13 @@
           <p>The aim of this project is to create an animated 3D star.</p>
           <hr>
         </div>
-        <div class="col-6">
+        <div class="col-sm-9 col-md-6">
           <h2>Result</h2>
           <canvas id="webgl-canvas" width="500" height="500">
             Your Browser does not support HTML5.
           </canvas>
         </div>
-        <div class="col-6">
+        <div class="col-sm-3 col-md-6">
           <h2>Settings</h2>
           <input class="btn" id="backgroundColorPicker" name="Color Picker" value="#1a1a1a" type="color"/>
           <label for="backgroundColorPicker" class="mt-3">Canvas color</label>
@@ -230,11 +230,12 @@
       mat4.lookAt(mvMatrix, [0,0,-3], [0,0,0], [0,1,0]); // regarde depuis -3 en profondeur vers 0,0,0 et avec y positif en haut de l'écran
 
       mat4.identity(wMatrix);
+      rotateModelViewMatrixUsingQuaternion();
       if(autoRotate)
       {
         angle += 1 / 30 / 6 * Math.PI;
       }
-      mat4.rotate(wMatrix, mat4.create(), angle, [1, 0, 1]); // rotation of the shape
+      mat4.rotate(wMatrix, wMatrix, angle, [1, 0, 1]); // rotation of the shape
 
       glContext.uniformMatrix4fv(prg.wMatrixUniform, false, wMatrix);
       glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mvMatrix);
