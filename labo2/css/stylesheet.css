@@ -106,3 +106,15 @@ canvas {
  	border-width: 15px; 
 	margin-top: -15px;
 }
+
+.btn-default {
+	border: 2px solid #343a40 !important;
+	background-color: white;
+	color: #343a40;
+	white-space: normal;
+}
+  
+.btn-default:hover {
+	background-color: #343a40;
+	color: white;
+}
