@@ -11,21 +11,6 @@ function degToRad(degrees) {
  * Allow to initialize Shaders.
  */
 function getShader(gl, type, glsl) {
-  // var script = document.getElementById("shader-vs");
-  // if (!script) {
-  //   return null;
-  // }
-  //
-  // var str = "";
-  // var k = script.firstChild;
-  // while (k) {
-  //   if (k.nodeType == 3) {
-  //     console.log(k.textContent)
-  //     str += k.textContent;
-  //   }
-  //   k = k.nextSibling;
-  // }
-
   var shader;
   if (type == "x-shader/x-fragment") {
     shader = glContext.createShader(glContext.FRAGMENT_SHADER);
@@ -66,7 +51,6 @@ function initProgram(fgShaderGLSL, vxShaderGLSL) {
   glContext.useProgram(prg);
 
   initShaderParameters(prg);
-
 }
 
 function requestAnimFrame(o) {
@@ -137,8 +121,6 @@ function getGLContext(canvasName) {
   }
 }
 
-
-
 /**
  * The following code snippet creates a vertex buffer and binds the vertices to it.
  */
@@ -163,7 +145,6 @@ function getIndexBufferWithIndices(indices) {
   return iBuffer;
 }
 
-
 function getArrayBufferWithArray(values) {
   //The following code snippet creates an array buffer and binds the array values to it
   var vBuffer = glContext.createBuffer();
@@ -173,7 +154,6 @@ function getArrayBufferWithArray(values) {
 
   return vBuffer;
 }
-
 
 function initTextureWithImage(sFilename, texturen) {
   var anz = texturen.length;

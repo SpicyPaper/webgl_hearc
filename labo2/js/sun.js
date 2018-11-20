@@ -1,5 +1,5 @@
 class Sun {
-  constructor(name, radius, colorTexture) {
+  constructor(name, radius, colorTexture, skyTexture) {
     this.name = name;
     this.radius = radius;
 
@@ -12,6 +12,7 @@ class Sun {
 
     //We take the pointers to the uploaded textures
     this.colorTexture = colorTexture;
+    this.skyTexture = skyTexture;
 
     //Creation of a model view matrix specific for the object
     this.mvMatrix = mat4.create();
@@ -93,7 +94,7 @@ class Sun {
     //Sun color texture
     glContext.activeTexture(glContext.TEXTURE6);
     glContext.bindTexture(glContext.TEXTURE_2D, this.colorTexture);
-    glContext.uniform1i(prg.colorTextureUniform, 0);
+    glContext.uniform1i(prg.colorTextureUniform, 6);
     glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_S, glContext.REPEAT);
 
     //Sky texture

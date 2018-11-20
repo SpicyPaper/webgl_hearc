@@ -5,7 +5,7 @@ var sunFragment = `
 
 uniform sampler2D uColorTexture;
 
-uniform sampler2D uNormalTexture;
+// uniform sampler2D uNormalTexture;
 // uniform sampler2D uSpecularTexture;
 // uniform sampler2D uNightTexture;
 // uniform sampler2D uAtmoTexture;

@@ -55,6 +55,7 @@ function initScene() {
   var earthTextureTab = [];
   var moonTextureTab = [];
   var sunTextureTab = [];
+  var skyTextureTab = [];
 
   //New textures
   // initTextureWithImage("ressources/8k_earth_daymap.jpg", earthTextureTab); //Loads the colorTexture
@@ -69,7 +70,7 @@ function initScene() {
   // initTextureWithImage("ressources/texMap4k_Earth_normal.jpg", earthTextureTab); //Loads the normal texture
   // initTextureWithImage("ressources/texMap4k_Earth_night.jpg", earthTextureTab); // Loads the night texture
   // initTextureWithImage("ressources/texMap4k_Earth_atmosphere.jpg", earthTextureTab); // Loads the night texture
-  initTextureWithImage("ressources/sky.jpg", earthTextureTab); // Loads the night texture
+  initTextureWithImage("ressources/sky.jpg", skyTextureTab); // Loads the night texture
 
   //initTextureWithImage("ressources/8k_moon.jpg", moonTextureTab); // Loads the night texture
   initTextureWithImage("ressources/8k_sun.jpg", sunTextureTab); // Loads the night texture
@@ -78,11 +79,11 @@ function initScene() {
   // earth diameter: 12 742 km -> 1
   // moon diameter: 3 474 km -> ~1/4
   // moon-earth : 384 400 km -> ~30
-  //let earth = new Planet("Earth", 1.0, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], earthTextureTab[5]);
-  let sun = new Sun("The Sun", 1.0, sunTextureTab[0]);
+  //let earth = new Planet("Earth", 1.0, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], skyTextureTab[0]);
+  let sun = new Sun("The Sun", 1.0, sunTextureTab[0], skyTextureTab[0]);
 
   // This doesn't work:
-  //let moon = new Planet("Moon", 0.25, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], earthTextureTab[5]);
+  //let moon = new Planet("Moon", 0.25, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], skyTextureTab[0]);
   //let orbit = new Orbit(earth, moon, 30, 27);
 
   //Creation of the moon instance
