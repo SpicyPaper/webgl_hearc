@@ -10,31 +10,32 @@ function degToRad(degrees) {
 /**
  * Allow to initialize Shaders.
  */
-function getShader(gl, id) {
-  var script = document.getElementById(id);
-  if (!script) {
-    return null;
-  }
-
-  var str = "";
-  var k = script.firstChild;
-  while (k) {
-    if (k.nodeType == 3) {
-      str += k.textContent;
-    }
-    k = k.nextSibling;
-  }
+function getShader(gl, type, glsl) {
+  // var script = document.getElementById("shader-vs");
+  // if (!script) {
+  //   return null;
+  // }
+  //
+  // var str = "";
+  // var k = script.firstChild;
+  // while (k) {
+  //   if (k.nodeType == 3) {
+  //     console.log(k.textContent)
+  //     str += k.textContent;
+  //   }
+  //   k = k.nextSibling;
+  // }
 
   var shader;
-  if (script.type == "x-shader/x-fragment") {
+  if (type == "x-shader/x-fragment") {
     shader = glContext.createShader(glContext.FRAGMENT_SHADER);
-  } else if (script.type == "x-shader/x-vertex") {
+  } else if (type == "x-shader/x-vertex") {
     shader = glContext.createShader(glContext.VERTEX_SHADER);
   } else {
     return null;
   }
 
-  glContext.shaderSource(shader, str);
+  glContext.shaderSource(shader, glsl);
   glContext.compileShader(shader);
 
   if (!glContext.getShaderParameter(shader, glContext.COMPILE_STATUS)) {
@@ -49,9 +50,9 @@ function getShader(gl, id) {
  * what to do with every vertex and fragment that we transmit.
  * The vertex shader and the fragment shaders together are called through that program.
  */
-function initProgram() {
-  var fgShader = getShader(glContext, "shader-fs");
-  var vxShader = getShader(glContext, "shader-vs");
+function initProgram(fgShaderGLSL, vxShaderGLSL) {
+  var fgShader = getShader(glContext, "x-shader/x-fragment", fgShaderGLSL);
+  var vxShader = getShader(glContext, "x-shader/x-vertex", vxShaderGLSL);
 
   prg = glContext.createProgram();
   glContext.attachShader(prg, vxShader);

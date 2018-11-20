@@ -158,7 +158,7 @@ function initWebGL() {
   //Initilisation on the canvas "webgl-canvas"
   glContext = getGLContext('webgl-canvas');
   //Initialisation of the programme
-  initProgram();
+  initProgram(earthFragment, earthVertex);
   //Initialisation of the scene
   initScene();
 }
