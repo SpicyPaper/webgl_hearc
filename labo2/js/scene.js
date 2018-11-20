@@ -52,8 +52,6 @@ function initShaderParameters(prg) {
 //Initialisation of the scene
 function initScene() {
   //Loading of textures
-  var earthTextureTab = [];
-  var moonTextureTab = [];
   var sunTextureTab = [];
   var skyTextureTab = [];
 
@@ -63,24 +61,19 @@ function initScene() {
   // initTextureWithImage("ressources/8k_earth_normal_map.jpg", earthTextureTab); //Loads the normal texture
   // initTextureWithImage("ressources/8k_earth_nightmap.jpg", earthTextureTab); // Loads the night texture
   // initTextureWithImage("ressources/8k_earth_clouds.jpg", earthTextureTab); // Loads the night texture
-
-  //Old version
-  // initTextureWithImage("ressources/texMap4k_Earth_main.jpg", earthTextureTab); //Loads the colorTexture
-  // initTextureWithImage("ressources/earth_spec.jpg", earthTextureTab); //Loads the specular texture
-  // initTextureWithImage("ressources/texMap4k_Earth_normal.jpg", earthTextureTab); //Loads the normal texture
-  // initTextureWithImage("ressources/texMap4k_Earth_night.jpg", earthTextureTab); // Loads the night texture
-  // initTextureWithImage("ressources/texMap4k_Earth_atmosphere.jpg", earthTextureTab); // Loads the night texture
-  initTextureWithImage("ressources/sky.jpg", skyTextureTab); // Loads the night texture
+  initTextureWithImage("ressources/sky.jpg", skyTextureTab); // Loads the sky texture
 
   //initTextureWithImage("ressources/8k_moon.jpg", moonTextureTab); // Loads the night texture
-  initTextureWithImage("ressources/8k_sun.jpg", sunTextureTab); // Loads the night texture
+  initTextureWithImage("ressources/4k_sun.jpg", sunTextureTab); // laods the base sun texture
+  initTextureWithImage("ressources/4k_sun_normal_map.jpg", sunTextureTab); // Loads the normal sun texture
+  initTextureWithImage("ressources/4k_sun_specular_map.jpg", sunTextureTab); // Loads the specular sun texture
 
   //Creation of the earth instance
   // earth diameter: 12 742 km -> 1
   // moon diameter: 3 474 km -> ~1/4
   // moon-earth : 384 400 km -> ~30
   //let earth = new Planet("Earth", 1.0, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], skyTextureTab[0]);
-  let sun = new Sun("The Sun", 1.0, sunTextureTab[0], skyTextureTab[0]);
+  let sun = new Sun("The Sun", 1.0, sunTextureTab[0], sunTextureTab[1], sunTextureTab[2], skyTextureTab[0]);
 
   // This doesn't work:
   //let moon = new Planet("Moon", 0.25, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], skyTextureTab[0]);

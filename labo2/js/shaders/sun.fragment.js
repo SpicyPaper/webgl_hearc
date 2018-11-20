@@ -5,8 +5,8 @@ var sunFragment = `
 
 uniform sampler2D uColorTexture;
 
-// uniform sampler2D uNormalTexture;
-// uniform sampler2D uSpecularTexture;
+uniform sampler2D uNormalTexture;
+uniform sampler2D uSpecularTexture;
 // uniform sampler2D uNightTexture;
 // uniform sampler2D uAtmoTexture;
 // uniform sampler2D uAtmoNormalTexture;
@@ -35,108 +35,106 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
  float a = 1.0 / 4096.0;
  float b = 1.0 / 2048.0;
 
- // vec2 moy0 = vec2(mapCoord.x - a, mapCoord.y - b);
- // vec2 moy1 = vec2(mapCoord.x, mapCoord.y - b);
- // vec2 moy2 = vec2(mapCoord.x + a, mapCoord.y - b);
- // vec2 moy3 = vec2(mapCoord.x - a, mapCoord.y);
- // vec2 moy4 = vec2(mapCoord.x, mapCoord.y);
- // vec2 moy5 = vec2(mapCoord.x + a, mapCoord.y);
- // vec2 moy6 = vec2(mapCoord.x - a, mapCoord.y + b);
- // vec2 moy7 = vec2(mapCoord.x, mapCoord.y + b);
- // vec2 moy8 = vec2(mapCoord.x + a, mapCoord.y + b);
- // vec2 moy9 = vec2(mapCoord.x - 2.0 * a, mapCoord.y + 2.0 * b);
- // vec2 moy10 = vec2(mapCoord.x - a, mapCoord.y + 2.0 * b);
- // vec2 moy11 = vec2(mapCoord.x, mapCoord.y + 2.0 * b);
- // vec2 moy12 = vec2(mapCoord.x + a, mapCoord.y + 2.0 * b);
- // vec2 moy13 = vec2(mapCoord.x + 2.0 * a, mapCoord.y + 2.0 * b);
- // vec2 moy14 = vec2(mapCoord.x - 2.0 * a, mapCoord.y + b);
- // vec2 moy15 = vec2(mapCoord.x + 2.0 * a, mapCoord.y + b);
- // vec2 moy16 = vec2(mapCoord.x - 2.0 * a, mapCoord.y);
- // vec2 moy17 = vec2(mapCoord.x + 2.0 * a, mapCoord.y);
- // vec2 moy18 = vec2(mapCoord.x - 2.0 * a, mapCoord.y - b);
- // vec2 moy19 = vec2(mapCoord.x + 2.0 * a, mapCoord.y - b);
- // vec2 moy20 = vec2(mapCoord.x - 2.0 * a, mapCoord.y - 2.0 * b);
- // vec2 moy21 = vec2(mapCoord.x - a, mapCoord.y - 2.0 * b);
- // vec2 moy22 = vec2(mapCoord.x, mapCoord.y - 2.0 * b);
- // vec2 moy23 = vec2(mapCoord.x + a, mapCoord.y - 2.0 * b);
- // vec2 moy24 = vec2(mapCoord.x + 2.0 * a, mapCoord.y - 2.0 * b);
- //
- // vec3 txlClr0 = texture2D(uNormalTexture, moy0).rgb;
- // vec3 txlClr1 = texture2D(uNormalTexture, moy1).rgb;
- // vec3 txlClr2 = texture2D(uNormalTexture, moy2).rgb;
- // vec3 txlClr3 = texture2D(uNormalTexture, moy3).rgb;
- // vec3 txlClr4 = texture2D(uNormalTexture, moy4).rgb;
- // vec3 txlClr5 = texture2D(uNormalTexture, moy5).rgb;
- // vec3 txlClr6 = texture2D(uNormalTexture, moy6).rgb;
- // vec3 txlClr7 = texture2D(uNormalTexture, moy7).rgb;
- // vec3 txlClr8 = texture2D(uNormalTexture, moy8).rgb;
- // vec3 txlClr9 = texture2D(uNormalTexture, moy9).rgb;
- // vec3 txlClr10 = texture2D(uNormalTexture, moy10).rgb;
- // vec3 txlClr11 = texture2D(uNormalTexture, moy11).rgb;
- // vec3 txlClr12 = texture2D(uNormalTexture, moy12).rgb;
- // vec3 txlClr13 = texture2D(uNormalTexture, moy13).rgb;
- // vec3 txlClr14 = texture2D(uNormalTexture, moy14).rgb;
- // vec3 txlClr15 = texture2D(uNormalTexture, moy15).rgb;
- // vec3 txlClr16 = texture2D(uNormalTexture, moy16).rgb;
- // vec3 txlClr17 = texture2D(uNormalTexture, moy17).rgb;
- // vec3 txlClr18 = texture2D(uNormalTexture, moy18).rgb;
- // vec3 txlClr19 = texture2D(uNormalTexture, moy19).rgb;
- // vec3 txlClr20 = texture2D(uNormalTexture, moy20).rgb;
- // vec3 txlClr21 = texture2D(uNormalTexture, moy21).rgb;
- // vec3 txlClr22 = texture2D(uNormalTexture, moy22).rgb;
- // vec3 txlClr23 = texture2D(uNormalTexture, moy23).rgb;
- // vec3 txlClr24 = texture2D(uNormalTexture, moy24).rgb;
- //
- // vec3 txlClrFinalHigh = vec3(txlClr4);
- // vec3 txlClrFinalMid = vec3((txlClr0 + txlClr1 + txlClr2 + txlClr3 + txlClr4 + txlClr5 + txlClr6 + txlClr7 + txlClr8) / 9.0);
- // vec3 txlClrFinalLow = vec3((txlClr0 + txlClr1 + txlClr2 + txlClr3 + txlClr4 + txlClr5 + txlClr6 + txlClr7 + txlClr8 + txlClr9 + txlClr10 + txlClr11 + txlClr12 + txlClr13 + txlClr14 + txlClr15 + txlClr16 + txlClr17 + txlClr18 + txlClr19 + txlClr20 + txlClr21 + txlClr22 + txlClr23 + txlClr24) / 25.0);
- // vec3 txlClrFinal = txlClrFinalLow;
- //
- // if (iZ > 2.0) {
- //   txlClrFinal = txlClrFinalHigh;
- // } else if (iZ > 1.0) {
- //   txlClrFinal = txlClrFinalMid;
- // } else {
- //   txlClrFinal = txlClrFinalLow;
- // }
- //
- // float timeClouds = time * 1.6;
- // float uClouds = timeClouds + atan(rotationVector.x, rotationVector.z) / (3.14159 * 2.0);
- // float vClouds = 0.5 + asin(rotationVector.y) / 3.14159;
- // vec2 mapCoordClouds = vec2(uClouds, vClouds);
+ vec2 moy0 = vec2(mapCoord.x - a, mapCoord.y - b);
+ vec2 moy1 = vec2(mapCoord.x, mapCoord.y - b);
+ vec2 moy2 = vec2(mapCoord.x + a, mapCoord.y - b);
+ vec2 moy3 = vec2(mapCoord.x - a, mapCoord.y);
+ vec2 moy4 = vec2(mapCoord.x, mapCoord.y);
+ vec2 moy5 = vec2(mapCoord.x + a, mapCoord.y);
+ vec2 moy6 = vec2(mapCoord.x - a, mapCoord.y + b);
+ vec2 moy7 = vec2(mapCoord.x, mapCoord.y + b);
+ vec2 moy8 = vec2(mapCoord.x + a, mapCoord.y + b);
+ vec2 moy9 = vec2(mapCoord.x - 2.0 * a, mapCoord.y + 2.0 * b);
+ vec2 moy10 = vec2(mapCoord.x - a, mapCoord.y + 2.0 * b);
+ vec2 moy11 = vec2(mapCoord.x, mapCoord.y + 2.0 * b);
+ vec2 moy12 = vec2(mapCoord.x + a, mapCoord.y + 2.0 * b);
+ vec2 moy13 = vec2(mapCoord.x + 2.0 * a, mapCoord.y + 2.0 * b);
+ vec2 moy14 = vec2(mapCoord.x - 2.0 * a, mapCoord.y + b);
+ vec2 moy15 = vec2(mapCoord.x + 2.0 * a, mapCoord.y + b);
+ vec2 moy16 = vec2(mapCoord.x - 2.0 * a, mapCoord.y);
+ vec2 moy17 = vec2(mapCoord.x + 2.0 * a, mapCoord.y);
+ vec2 moy18 = vec2(mapCoord.x - 2.0 * a, mapCoord.y - b);
+ vec2 moy19 = vec2(mapCoord.x + 2.0 * a, mapCoord.y - b);
+ vec2 moy20 = vec2(mapCoord.x - 2.0 * a, mapCoord.y - 2.0 * b);
+ vec2 moy21 = vec2(mapCoord.x - a, mapCoord.y - 2.0 * b);
+ vec2 moy22 = vec2(mapCoord.x, mapCoord.y - 2.0 * b);
+ vec2 moy23 = vec2(mapCoord.x + a, mapCoord.y - 2.0 * b);
+ vec2 moy24 = vec2(mapCoord.x + 2.0 * a, mapCoord.y - 2.0 * b);
+ 
+ vec3 txlClr0 = texture2D(uNormalTexture, moy0).rgb;
+ vec3 txlClr1 = texture2D(uNormalTexture, moy1).rgb;
+ vec3 txlClr2 = texture2D(uNormalTexture, moy2).rgb;
+ vec3 txlClr3 = texture2D(uNormalTexture, moy3).rgb;
+ vec3 txlClr4 = texture2D(uNormalTexture, moy4).rgb;
+ vec3 txlClr5 = texture2D(uNormalTexture, moy5).rgb;
+ vec3 txlClr6 = texture2D(uNormalTexture, moy6).rgb;
+ vec3 txlClr7 = texture2D(uNormalTexture, moy7).rgb;
+ vec3 txlClr8 = texture2D(uNormalTexture, moy8).rgb;
+ vec3 txlClr9 = texture2D(uNormalTexture, moy9).rgb;
+ vec3 txlClr10 = texture2D(uNormalTexture, moy10).rgb;
+ vec3 txlClr11 = texture2D(uNormalTexture, moy11).rgb;
+ vec3 txlClr12 = texture2D(uNormalTexture, moy12).rgb;
+ vec3 txlClr13 = texture2D(uNormalTexture, moy13).rgb;
+ vec3 txlClr14 = texture2D(uNormalTexture, moy14).rgb;
+ vec3 txlClr15 = texture2D(uNormalTexture, moy15).rgb;
+ vec3 txlClr16 = texture2D(uNormalTexture, moy16).rgb;
+ vec3 txlClr17 = texture2D(uNormalTexture, moy17).rgb;
+ vec3 txlClr18 = texture2D(uNormalTexture, moy18).rgb;
+ vec3 txlClr19 = texture2D(uNormalTexture, moy19).rgb;
+ vec3 txlClr20 = texture2D(uNormalTexture, moy20).rgb;
+ vec3 txlClr21 = texture2D(uNormalTexture, moy21).rgb;
+ vec3 txlClr22 = texture2D(uNormalTexture, moy22).rgb;
+ vec3 txlClr23 = texture2D(uNormalTexture, moy23).rgb;
+ vec3 txlClr24 = texture2D(uNormalTexture, moy24).rgb;
+ 
+ vec3 txlClrFinalHigh = vec3(txlClr4);
+ vec3 txlClrFinalMid = vec3((txlClr0 + txlClr1 + txlClr2 + txlClr3 + txlClr4 + txlClr5 + txlClr6 + txlClr7 + txlClr8) / 9.0);
+ vec3 txlClrFinalLow = vec3((txlClr0 + txlClr1 + txlClr2 + txlClr3 + txlClr4 + txlClr5 + txlClr6 + txlClr7 + txlClr8 + txlClr9 + txlClr10 + txlClr11 + txlClr12 + txlClr13 + txlClr14 + txlClr15 + txlClr16 + txlClr17 + txlClr18 + txlClr19 + txlClr20 + txlClr21 + txlClr22 + txlClr23 + txlClr24) / 25.0);
+ vec3 txlClrFinal = txlClrFinalLow;
+ 
+ if (iZ > 2.0) {
+   txlClrFinal = txlClrFinalHigh;
+ } else if (iZ > 1.0) {
+   txlClrFinal = txlClrFinalMid;
+ } else {
+   txlClrFinal = txlClrFinalLow;
+ }
+ 
+ float timeClouds = time * 1.6;
+ float uClouds = timeClouds + atan(rotationVector.x, rotationVector.z) / (3.14159 * 2.0);
+ float vClouds = 0.5 + asin(rotationVector.y) / 3.14159;
+ vec2 mapCoordClouds = vec2(uClouds, vClouds);
 
  vec3 texelColor = texture2D(uColorTexture, mapCoord).rgb;
- // vec3 texelSpecular = texture2D(uSpecularTexture, mapCoord).rgb;
+ vec3 texelSpecular = texture2D(uSpecularTexture, mapCoord).rgb;
  // vec3 texelNight = texture2D(uNightTexture, mapCoord).rgb;
  // vec3 texelAtmo = texture2D(uAtmoTexture, mapCoordClouds).rgb;
- // vec3 texelNormal = txlClrFinal * 2.0 - 1.0;
+ vec3 texelNormal = txlClrFinal * 2.0 - 1.0;
  // float cloudy = sqrt(texelAtmo.x * texelAtmo.x + texelAtmo.y * texelAtmo.y + texelAtmo.z * texelAtmo.z);
 
  // texelColor += texelAtmo;
 
- // vec3 N = normalize(texelNormal);
- //
+ vec3 N = normalize(texelNormal);
+ 
  // if (cloudy > 1.0) {
  //   N = vec3(0.0, 0.0, 1.0);
  // }
- //
- // vec3 E = normalize(vec3(-newX, -newY, oppZ));
- // vec3 R = reflect(-L, N);
- // float shadow = max(dot(R, E), 0.0);
+ 
+ vec3 E = normalize(vec3(-newX, -newY, oppZ));
+ vec3 R = reflect(-L, N);
+ //float shadow = max(dot(R, E), 0.0);
 
- // vec3 finalColor = vec3(1.0, 1.0, 1.0) * shadow;
  vec3 finalColor = vec3(1.0, 1.0, 1.0);// * shadow;
 
-
- // float lambertTerm = max(dot(N, L), 0.0);
- // float specular = pow(abs(max(dot(R, E), 0.0)), 32.0) * lambertTerm;
- //
- // if (shadow < 0.2) {
+ float lambertTerm = max(dot(N, L), 0.0);
+ float specular = pow(abs(max(dot(R, E), 0.0)), 32.0) * lambertTerm;
+ 
+ //if (shadow < 0.2) {
  //   float fade = shadow < 0.0 ? 1.0 - lambertTerm * -10.0 : 1.0;
  //   finalColor += texelNight * length(texelNight) * fade / 1.5;
- // }
- //
- // finalColor += specular * texelSpecular;
+ //}
+ 
+ finalColor += specular * texelSpecular;
 
  finalColor *= texelColor;
 

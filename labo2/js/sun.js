@@ -1,5 +1,5 @@
 class Sun {
-  constructor(name, radius, colorTexture, skyTexture) {
+  constructor(name, radius, colorTexture, normalTexture, specularTexture, skyTexture) {
     this.name = name;
     this.radius = radius;
 
@@ -12,6 +12,8 @@ class Sun {
 
     //We take the pointers to the uploaded textures
     this.colorTexture = colorTexture;
+    this.normalTexture = normalTexture;
+    this.specularTexture = specularTexture;
     this.skyTexture = skyTexture;
 
     //Creation of a model view matrix specific for the object
@@ -95,6 +97,18 @@ class Sun {
     glContext.activeTexture(glContext.TEXTURE6);
     glContext.bindTexture(glContext.TEXTURE_2D, this.colorTexture);
     glContext.uniform1i(prg.colorTextureUniform, 6);
+    glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_S, glContext.REPEAT);
+
+    //Planet normal texture
+    glContext.activeTexture(glContext.TEXTURE1);
+    glContext.bindTexture(glContext.TEXTURE_2D, this.normalTexture);
+    glContext.uniform1i(prg.normalTextureUniform, 1);
+    glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_S, glContext.REPEAT);
+
+    //Sun specular texture
+    glContext.activeTexture(glContext.TEXTURE2);
+    glContext.bindTexture(glContext.TEXTURE_2D, this.specularTexture);
+    glContext.uniform1i(prg.specularTextureUniform, 2);
     glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_S, glContext.REPEAT);
 
     //Sky texture
