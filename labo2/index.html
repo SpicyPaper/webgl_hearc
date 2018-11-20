@@ -10,25 +10,26 @@
 		<script src="debug/webgl-debug.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<!-- import application scripts -->
+        <script src="./js/orbit.js"></script>
         <script src="./js/planet.js"></script>
 		<script src="./js/scene.js"></script>
 		<!-- vertex shader -->
         <script id="shader-vs" type="x-shader/x-vertex">
             const vec3 lightpos = vec3(0.0, 0.0, 5.0);
-			
+
 			attribute vec3 aVertexPosition;
 			attribute vec2 aTextureCoord;
 			attribute vec4 aColors;
-			
+
 			uniform mat4 uPMatrix;
 			uniform mat4 uMVMatrix;
 			uniform mat4 uNMatrix;
-			
+
 			varying vec2 vTextureCoord;
 			varying vec4 vPosition;
 			varying vec3 vLightpos;
 			varying vec4 vColors;
-			
+
 			void main(void) {
 				//Defines position based on mvMatrix and projection matrix
 				gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
@@ -36,10 +37,10 @@
 				vTextureCoord = aTextureCoord;
 				//Calulcates light vector
 				vLightpos = (uMVMatrix * vec4(lightpos, 1.0)).xyz;
-				
+
 				//Calculates color (used for tetrahedral)
 				vColors = aColors;
-				
+
 				//Retrives position
 				vPosition = gl_Position;
 			}
@@ -49,7 +50,7 @@
             #ifdef GL_ES
 				precision highp float;
 			#endif
-			
+
 			uniform sampler2D uColorTexture;
 			uniform sampler2D uNormalTexture;
 			uniform sampler2D uSpecularTexture;
@@ -64,20 +65,20 @@
 			uniform int uDrawPrimitive;
 			uniform float iRotX;
 			uniform float iRotY;
-			
+
 			varying vec4 vPosition;
 			varying vec3 vLightpos;
 			varying vec2 vTextureCoord;
 			varying vec4 vColors;
-			
-			//Retrives the color on the texture based on the rotation
+
+			//Retrieves the color on the texture based on the rotation
 			vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotationVector)
             {
 				float time = iGlobalTime * 0.000025;
 				float u = time + atan(rotationVector.x, rotationVector.z)/(3.14159 * 2.0);
 				float v = 0.5 + asin(rotationVector.y) / 3.14159;
 				vec2 mapCoord = vec2(u, v);
-				
+
 				float a = 1.0/4096.0;
 				float b = 1.0/2048.0;
 				vec2 moy0 = vec2(mapCoord.x-a, mapCoord.y-b);
@@ -141,52 +142,49 @@
 				}else{
 					txlClrFinal = txlClrFinalLow;
 				}
-				
+
 				float timeClouds = time * 1.6;
 				float uClouds = timeClouds + atan(rotationVector.x, rotationVector.z)/(3.14159 * 2.0);
 				float vClouds = 0.5 + asin(rotationVector.y) / 3.14159;
 				vec2 mapCoordClouds = vec2(uClouds, vClouds);
-				
+
 				vec3 texelColor = texture2D(uColorTexture, mapCoord).rgb;
 				vec3 texelSpecular = texture2D(uSpecularTexture, mapCoord).rgb;
 				vec3 texelNight = texture2D(uNightTexture, mapCoord).rgb;
 				vec3 texelAtmo = texture2D(uAtmoTexture, mapCoordClouds).rgb;
 				vec3 texelNormal = txlClrFinal * 2.0 - 1.0;
 				float cloudy = sqrt(texelAtmo.x * texelAtmo.x + texelAtmo.y * texelAtmo.y + texelAtmo.z * texelAtmo.z);
-				
+
 				texelColor += texelAtmo;
-				
+
                 vec3 N = normalize(texelNormal);
-				
+
 				if(cloudy > 1.0){
 					N = vec3(0.0,0.0,1.0);
 				}
-				
+
                 vec3 E = normalize(vec3(-newX, -newY, oppZ));
                 vec3 R = reflect(-L, N);
 				float shadow = max(dot(R, E), 0.0);
-				
+
                 vec3 finalColor = vec3(1.0, 1.0, 1.0) * shadow;
-				
-				
+
+
                 float lambertTerm = max(dot(N, L), 0.0);
                 float specular = pow(abs(max(dot(R, E), 0.0)), 32.0) * lambertTerm;
-			
+
 				if (shadow < 0.2){
 					float fade = shadow < 0.0 ? 1.0 - lambertTerm * -10.0 : 1.0;
 					finalColor += texelNight * length(texelNight) * fade / 1.5;
 				}
-				
+
                 finalColor += specular * texelSpecular;
-				
+
                 finalColor *= texelColor;
-				
-				
-				
+
                 return finalColor;
-				
             }
-			
+
 			void main(void) {
 				//Calculates new x based on z offset
 				float newX = vPosition.x * iZ / vPosition.w;
@@ -197,30 +195,30 @@
 				float oppZ = sqrt(iRadius * iRadius - adjXY * adjXY);
 				//Defines a new position for the planet
 				vec4 planetPosition = vec4(newX, newY, oppZ, 1.0);
-				
+
 				//Calculates the distance between the camera Z and the planet radius
 				float dist = adjXY / iRadius;
-				
+
 				float rotY = iRotY;
 				//Handles rotY value to rotate properly
 				if(cos(iRotX) <= 0.0){
 					rotY = -iRotY;
 				}
-				
+
 				//Calculates a rotation matrix in x
 				mat4 rotXMatrix;
 				rotXMatrix[0] = vec4(1.0,0.0,0.0,0.0);
 				rotXMatrix[1] = vec4(0.0,cos(iRotX),-sin(iRotX),0.0);
 				rotXMatrix[2] = vec4(0.0,sin(iRotX),cos(iRotX),0.0);
 				rotXMatrix[3] = vec4(0.0,0.0,0.0,1.0);
-				
+
 				//Calculates a rotation matrix in y
 				mat4 rotYMatrix;
 				rotYMatrix[0] = vec4(cos(iRotY),0.0,sin(rotY),0.0);
 				rotYMatrix[1] = vec4(0.0,1.0,0.0,0.0);
 				rotYMatrix[2] = vec4(-sin(rotY),0.0,cos(iRotY),0.0);
 				rotYMatrix[3] = vec4(0.0,0.0,0.0,1.0);
-				
+
 				//Defines the rotation vector
 				vec4 rotationVector = rotYMatrix * rotXMatrix * vec4(planetPosition.x, planetPosition.y, planetPosition.z, 1.0);
 				//By default, the final color is white
@@ -237,7 +235,7 @@
 						if(dist >= 0.987){
 							//Base color for the atmosphere
 							vec3 colorAtmo = vec3(0.05, 0.1, 1.0);
-							
+
 							float bright = dot(normalize(vec3(planetPosition.x, planetPosition.y, planetPosition.z)), L) * 3.0;
 							float dotEyeLight = dot(-normalize(vec3(planetPosition.x, planetPosition.y, planetPosition.z)), L);
 							//We define the color as the colorAtmo * brightness
@@ -284,21 +282,21 @@
     </head>
 	<!-- initialize webgl onload -->
     <body onload="initWebGL()">
-		<script>
-			displayTitle("Ch.10 Projet fil rouge - Notre jolie maison", 1,1,1,1,1,1,1);
-		</script>
+		<h1>
+			Ch.10 Projet fil rouge - Notre jolie maison
+		</h1>
 		<br>
 			Projet démo afin de faire un rendu de la terre et de la lune, étape 7. Calcul de géométrie dans le shader et rendu dans un tétraèdre <a href="planet-ch10.zip">Télécharger la démo</a>
 		<br>
 		<!-- webgl canvas -->
-		<canvas id="webgl-canvas" width="500" height="500">
+		<canvas id="webgl-canvas" width="1000" height="1000">
 		  HTML5 is not supported
 		</canvas>
-		
+
 		<!-- Show tetra button -->
 		<button id="showContainerButton" onclick="showContainer()">Show container</button>
 		<br/>
-		
+
     </body>
     <script src="./js/mouseMotionHandling.js"></script>
 </html>
