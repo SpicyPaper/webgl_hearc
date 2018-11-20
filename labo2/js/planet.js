@@ -28,7 +28,6 @@ class Planet {
     this.init();
   }
 
-
   //Getter/setter for drawTetra
   set drawTetra(draw) {
     this._drawTetra = draw;

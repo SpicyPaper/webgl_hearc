@@ -1,4 +1,4 @@
-class Planet {
+class Sun {
   constructor(name, radius, colorTexture) {
     this.name = name;
     this.radius = radius;

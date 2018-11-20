@@ -54,13 +54,14 @@ function initScene() {
   //Loading of textures
   var earthTextureTab = [];
   var moonTextureTab = [];
+  var sunTextureTab = [];
 
   //New textures
-  initTextureWithImage("ressources/8k_earth_daymap.jpg", earthTextureTab); //Loads the colorTexture
-  initTextureWithImage("ressources/8k_earth_specular_map.jpg", earthTextureTab); //Loads the specular texture
-  initTextureWithImage("ressources/8k_earth_normal_map.jpg", earthTextureTab); //Loads the normal texture
-  initTextureWithImage("ressources/8k_earth_nightmap.jpg", earthTextureTab); // Loads the night texture
-  initTextureWithImage("ressources/8k_earth_clouds.jpg", earthTextureTab); // Loads the night texture
+  // initTextureWithImage("ressources/8k_earth_daymap.jpg", earthTextureTab); //Loads the colorTexture
+  // initTextureWithImage("ressources/8k_earth_specular_map.jpg", earthTextureTab); //Loads the specular texture
+  // initTextureWithImage("ressources/8k_earth_normal_map.jpg", earthTextureTab); //Loads the normal texture
+  // initTextureWithImage("ressources/8k_earth_nightmap.jpg", earthTextureTab); // Loads the night texture
+  // initTextureWithImage("ressources/8k_earth_clouds.jpg", earthTextureTab); // Loads the night texture
 
   //Old version
   // initTextureWithImage("ressources/texMap4k_Earth_main.jpg", earthTextureTab); //Loads the colorTexture
@@ -69,14 +70,16 @@ function initScene() {
   // initTextureWithImage("ressources/texMap4k_Earth_night.jpg", earthTextureTab); // Loads the night texture
   // initTextureWithImage("ressources/texMap4k_Earth_atmosphere.jpg", earthTextureTab); // Loads the night texture
   initTextureWithImage("ressources/sky.jpg", earthTextureTab); // Loads the night texture
-  initTextureWithImage("ressources/texMap_Moon.jpg", moonTextureTab); // Loads the night texture
+
+  //initTextureWithImage("ressources/8k_moon.jpg", moonTextureTab); // Loads the night texture
+  initTextureWithImage("ressources/8k_sun.jpg", sunTextureTab); // Loads the night texture
 
   //Creation of the earth instance
   // earth diameter: 12 742 km -> 1
   // moon diameter: 3 474 km -> ~1/4
   // moon-earth : 384 400 km -> ~30
-  let earth = new Planet("Earth", 1.0, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], earthTextureTab[5]);
-  //let sun = new Planet("Sun", 1.0, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], earthTextureTab[5]);
+  //let earth = new Planet("Earth", 1.0, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], earthTextureTab[5]);
+  let sun = new Sun("The Sun", 1.0, sunTextureTab[0]);
 
   // This doesn't work:
   //let moon = new Planet("Moon", 0.25, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], earthTextureTab[5]);
@@ -84,7 +87,8 @@ function initScene() {
 
   //Creation of the moon instance
   //sceneObjects.push(moon);
-  sceneObjects.push(earth);
+  //sceneObjects.push(earth);
+  sceneObjects.push(sun);
   //orbits.push(orbit);
 
   //Enabling the depth test
@@ -158,7 +162,7 @@ function initWebGL() {
   //Initilisation on the canvas "webgl-canvas"
   glContext = getGLContext('webgl-canvas');
   //Initialisation of the programme
-  initProgram(earthFragment, earthVertex);
+  initProgram(sunFragment, sunVertex);
   //Initialisation of the scene
   initScene();
 }
