@@ -20,10 +20,117 @@ uniform int uDrawPrimitive;
 uniform float iRotX;
 uniform float iRotY;
 
+//NEW ONES :
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+
 varying vec4 vPosition;
 varying vec3 vLightpos;
 varying vec2 vTextureCoord;
 varying vec4 vColors;
+
+// Some useful functions
+vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+
+//
+// Description : GLSL 2D simplex noise function
+//      Author : Ian McEwan, Ashima Arts
+//  Maintainer : ijm
+//     Lastmod : 20110822 (ijm)
+//     License :
+//  Copyright (C) 2011 Ashima Arts. All rights reserved.
+//  Distributed under the MIT License. See LICENSE file.
+//  https://github.com/ashima/webgl-noise
+//
+float snoise(vec2 v) {
+
+    // Precompute values for skewed triangular grid
+    const vec4 C = vec4(0.211324865405187,
+                        // (3.0-sqrt(3.0))/6.0
+                        0.366025403784439,
+                        // 0.5*(sqrt(3.0)-1.0)
+                        -0.577350269189626,
+                        // -1.0 + 2.0 * C.x
+                        0.024390243902439);
+                        // 1.0 / 41.0
+
+    // First corner (x0)
+    vec2 i  = floor(v + dot(v, C.yy));
+    vec2 x0 = v - i + dot(i, C.xx);
+
+    // Other two corners (x1, x2)
+    vec2 i1 = vec2(0.0);
+    i1 = (x0.x > x0.y)? vec2(1.0, 0.0):vec2(0.0, 1.0);
+    vec2 x1 = x0.xy + C.xx - i1;
+    vec2 x2 = x0.xy + C.zz;
+
+    // Do some permutations to avoid
+    // truncation effects in permutation
+    i = mod289(i);
+    vec3 p = permute(
+            permute( i.y + vec3(0.0, i1.y, 1.0))
+                + i.x + vec3(0.0, i1.x, 1.0 ));
+
+    vec3 m = max(0.5 - vec3(
+                        dot(x0,x0),
+                        dot(x1,x1),
+                        dot(x2,x2)
+                        ), 0.0);
+
+    m = m*m ;
+    m = m*m ;
+
+    // Gradients:
+    //  41 pts uniformly over a line, mapped onto a diamond
+    //  The ring size 17*17 = 289 is close to a multiple
+    //      of 41 (41*7 = 287)
+
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 ox = floor(x + 0.5);
+    vec3 a0 = x - ox;
+
+    // Normalise gradients implicitly by scaling m
+    // Approximation of: m *= inversesqrt(a0*a0 + h*h);
+    m *= 1.79284291400159 - 0.85373472095314 * (a0*a0+h*h);
+
+    // Compute final noise value at P
+    vec3 g = vec3(0.0);
+    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+    g.yz = a0.yz * vec2(x1.x,x2.x) + h.yz * vec2(x1.y,x2.y);
+    return 130.0 * dot(m, g);
+}
+
+float snoise2(vec2 v) {
+    const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
+                        0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
+                        -0.577350269189626,  // -1.0 + 2.0 * C.x
+                        0.024390243902439); // 1.0 / 41.0
+    vec2 i  = floor(v + dot(v, C.yy) );
+    vec2 x0 = v -   i + dot(i, C.xx);
+    vec2 i1;
+    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+    vec4 x12 = x0.xyxy + C.xxzz;
+    x12.xy -= i1;
+    i = mod289(i); // Avoid truncation effects in permutation
+    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+        + i.x + vec3(0.0, i1.x, 1.0 ));
+
+    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+    m = m*m ;
+    m = m*m ;
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 ox = floor(x + 0.5);
+    vec3 a0 = x - ox;
+    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+    vec3 g;
+    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+    return 130.0 * dot(m, g);
+}
 
 //Retrieves the color on the texture based on the rotation
 vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotationVector) {
@@ -189,26 +296,66 @@ void main(void) {
  if (uDrawPrimitive == 0) {
    //If we are within the planet
    if (dist <= 1.0) {
-     //Retrives the color for the current fragment
-     finalColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
-     //If the distance is near the planet, we handle the atmosphere and create a border around it
-     if (dist >= 0.987) {
-       //Base color for the atmosphere
-       vec3 colorAtmo = vec3(1, 0.5, 0.1);
+     // //Retrives the color for the current fragment
+     // finalColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
+     // //If the distance is near the planet, we handle the atmosphere and create a border around it
+     // if (dist >= 0.987) {
+     //   //Base color for the atmosphere
+     //   vec3 colorAtmo = vec3(1, 0.5, 0.1);
+     //
+     //   float bright = dot(normalize(vec3(planetPosition.x, planetPosition.y, planetPosition.z)), L) * 3.0;
+     //   float dotEyeLight = dot(-normalize(vec3(planetPosition.x, planetPosition.y, planetPosition.z)), L);
+     //   //We define the color as the colorAtmo * brightness
+     //   finalColor += vec4(colorAtmo * bright, 1.0);
+     //   if (dotEyeLight < 0.1) {
+     //     finalColor += vec4(0.25, 0.0, 0.015, 1.0);
+     //     if (dotEyeLight < 0.05) {
+     //       finalColor += vec4(-0.5, 0.0, 0.0, 1.0);
+     //     }
+     //   } else {
+     //     finalColor = vec4(colorAtmo / 4.0, 1.0);
+     //   }
+     // }
 
-       float bright = dot(normalize(vec3(planetPosition.x, planetPosition.y, planetPosition.z)), L) * 3.0;
-       float dotEyeLight = dot(-normalize(vec3(planetPosition.x, planetPosition.y, planetPosition.z)), L);
-       //We define the color as the colorAtmo * brightness
-       finalColor += vec4(colorAtmo * bright, 1.0);
-       if (dotEyeLight < 0.1) {
-         finalColor += vec4(0.25, 0.0, 0.015, 1.0);
-         if (dotEyeLight < 0.05) {
-           finalColor += vec4(-0.5, 0.0, 0.0, 1.0);
-         }
-       } else {
-         finalColor = vec4(colorAtmo / 4.0, 1.0);
-       }
-     }
+      // V1 for noise
+      vec2 st = gl_FragCoord.xy/vec2(1000).xy;
+      st.x *= vec2(1000).x/vec2(1000).y;
+
+      vec3 color = vec3(0.0);
+
+      // Scale the space in order to see the function
+      st *= 200.;
+      color = vec3(1.0, snoise(atan(iGlobalTime)+st)*2.0, 0.0);
+      color *= vec3(1.0,0.5,0.2);
+
+      finalColor = vec4(color,0.9);
+
+
+      // // V2 for noise
+      // vec2 st = gl_FragCoord.xy/u_resolution.xy;
+      // st.x *= u_resolution.x/u_resolution.y;
+      // vec3 color = vec3(0.0);
+      // vec2 pos = vec2(st*3.);
+      // //pos *=20.;
+      // float DF = 0.0;
+      //
+      // // Add a random position
+      // float a = 0.0;
+      // vec2 vel = vec2(iGlobalTime*.1);
+      // DF += snoise(pos+vel)*.25+.25;
+      //
+      // // Add a random position
+      // a = snoise(pos*vec2(cos(iGlobalTime*0.15),sin(iGlobalTime*0.1))*0.1)*3.1415;
+      // vel = vec2(cos(a),sin(a));
+      // DF += snoise2(pos+vel)*.25+.25;
+      //
+      // color = vec3( smoothstep(0.30,0.45,fract(DF)));
+      // color *= vec3(1.0,1.0,0.0);
+      // //color -= 0.30;
+      // //color *= 1./0.15;
+      //
+      // finalColor = vec4(1.0,1.-color.g,0.0,1.0);
+
      //If we are not on "earth"
    } else {
      //We draw the halo (blue halo) and the skybox
@@ -238,4 +385,4 @@ void main(void) {
  }
  gl_FragColor = finalColor.rgba;
 }
-`;
+`
