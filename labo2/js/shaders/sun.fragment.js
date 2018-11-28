@@ -60,7 +60,7 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
  vec2 moy22 = vec2(mapCoord.x, mapCoord.y - 2.0 * b);
  vec2 moy23 = vec2(mapCoord.x + a, mapCoord.y - 2.0 * b);
  vec2 moy24 = vec2(mapCoord.x + 2.0 * a, mapCoord.y - 2.0 * b);
- 
+
  vec3 txlClr0 = texture2D(uNormalTexture, moy0).rgb;
  vec3 txlClr1 = texture2D(uNormalTexture, moy1).rgb;
  vec3 txlClr2 = texture2D(uNormalTexture, moy2).rgb;
@@ -86,12 +86,12 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
  vec3 txlClr22 = texture2D(uNormalTexture, moy22).rgb;
  vec3 txlClr23 = texture2D(uNormalTexture, moy23).rgb;
  vec3 txlClr24 = texture2D(uNormalTexture, moy24).rgb;
- 
+
  vec3 txlClrFinalHigh = vec3(txlClr4);
  vec3 txlClrFinalMid = vec3((txlClr0 + txlClr1 + txlClr2 + txlClr3 + txlClr4 + txlClr5 + txlClr6 + txlClr7 + txlClr8) / 9.0);
  vec3 txlClrFinalLow = vec3((txlClr0 + txlClr1 + txlClr2 + txlClr3 + txlClr4 + txlClr5 + txlClr6 + txlClr7 + txlClr8 + txlClr9 + txlClr10 + txlClr11 + txlClr12 + txlClr13 + txlClr14 + txlClr15 + txlClr16 + txlClr17 + txlClr18 + txlClr19 + txlClr20 + txlClr21 + txlClr22 + txlClr23 + txlClr24) / 25.0);
  vec3 txlClrFinal = txlClrFinalLow;
- 
+
  if (iZ > 2.0) {
    txlClrFinal = txlClrFinalHigh;
  } else if (iZ > 1.0) {
@@ -99,7 +99,7 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
  } else {
    txlClrFinal = txlClrFinalLow;
  }
- 
+
  float timeClouds = time * 1.6;
  float uClouds = timeClouds + atan(rotationVector.x, rotationVector.z) / (3.14159 * 2.0);
  float vClouds = 0.5 + asin(rotationVector.y) / 3.14159;
@@ -115,11 +115,11 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
  // texelColor += texelAtmo;
 
  vec3 N = normalize(texelNormal);
- 
+
  // if (cloudy > 1.0) {
  //   N = vec3(0.0, 0.0, 1.0);
  // }
- 
+
  vec3 E = normalize(vec3(-newX, -newY, oppZ));
  vec3 R = reflect(-L, N);
  //float shadow = max(dot(R, E), 0.0);
@@ -128,12 +128,12 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
 
  float lambertTerm = max(dot(N, L), 0.0);
  float specular = pow(abs(max(dot(R, E), 0.0)), 32.0) * lambertTerm;
- 
+
  //if (shadow < 0.2) {
  //   float fade = shadow < 0.0 ? 1.0 - lambertTerm * -10.0 : 1.0;
  //   finalColor += texelNight * length(texelNight) * fade / 1.5;
  //}
- 
+
  finalColor += specular * texelSpecular;
 
  finalColor *= texelColor;
@@ -189,27 +189,9 @@ void main(void) {
    if (dist <= 1.0) {
      //Retrives the color for the current fragment
      finalColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
-     //If the distance is near the planet, we handle the atmosphere and create a border around it
-     if (dist >= 0.987) {
-       //Base color for the atmosphere
-       vec3 colorAtmo = vec3(1, 0.5, 0.1);
-
-       float bright = dot(normalize(vec3(planetPosition.x, planetPosition.y, planetPosition.z)), L) * 3.0;
-       float dotEyeLight = dot(-normalize(vec3(planetPosition.x, planetPosition.y, planetPosition.z)), L);
-       //We define the color as the colorAtmo * brightness
-       finalColor += vec4(colorAtmo * bright, 1.0);
-       if (dotEyeLight < 0.1) {
-         finalColor += vec4(0.25, 0.0, 0.015, 1.0);
-         if (dotEyeLight < 0.05) {
-           finalColor += vec4(-0.5, 0.0, 0.0, 1.0);
-         }
-       } else {
-         finalColor = vec4(colorAtmo / 4.0, 1.0);
-       }
-     }
      //If we are not on "earth"
    } else {
-     //We draw the halo (blue halo) and the skybox
+     //We draw the halo (Orange halo) and the skybox
      float skyX = -(vPosition.x / vPosition.w) * 0.7;
      float skyY = -(vPosition.y / vPosition.w) * 0.7;
      float adjSky = sqrt(skyX * skyX + skyY * skyY);
@@ -219,9 +201,22 @@ void main(void) {
      float vSky = 0.5 + asin(skyVector.y) / (0.25 * 3.14159);
      vec2 mapCoordSky = vec2(uSky, vSky);
      vec3 texelSky = texture2D(uSkyTexture, mapCoordSky).rgb;
+
      finalColor *= vec4(texelSky, 1.0);
+
+     //Halo lumineux global
+     if (dist <= 20.0) {
+       finalColor += vec4(0.5, 0.2, 0.1, 0.8) / pow(abs(dist), 2.0);
+     }
+
      if (dist <= 2.0) {
-       finalColor += vec4(0.5, 0.2, 0.1, 0.8) / pow(abs(dist), 15.0);
+       // iGlobalTime
+       float angle = atan(newY,newX)+iGlobalTime/2000.0;
+       float luminosity = sin(angle*1.0)+sin(angle*2.0)+cos(angle*3.0)+sin(angle*4.0);
+       finalColor += (luminosity+4.0)/8.0 * vec4(1.0, 1.0, 0.0, 0.8) / pow(abs(dist), 5.0);
+       //vec2 normalized = normalize(vec2(newX,newY))*iRadius;
+       //finalColor = vec4(colorFromTextures(L, planetPosition.z, normalized.x, normalized.y, rotationVector), 1.0);
+       //finalColor = vec4(,normalized.y,0.0,1.0);
      }
    }
    //If we are meant to draw the primitives of the tetrahedron, we simply draw it
