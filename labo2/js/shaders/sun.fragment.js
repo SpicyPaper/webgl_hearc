@@ -3,6 +3,8 @@ var sunFragment = `
   precision highp float;
 #endif
 
+#define M_PI 3.1415926535897932384626433832795
+
 uniform sampler2D uColorTexture;
 
 uniform sampler2D uNormalTexture;
@@ -187,9 +189,9 @@ void main(void) {
  if (uDrawPrimitive == 0) {
    //If we are within the planet
    if (dist <= 1.0) {
-     //Retrives the color for the current fragment
+   //   Retrives the color for the current fragment
      finalColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
-     //If we are not on "earth"
+   //   If we are not on "earth"
    } else {
      //We draw the halo (Orange halo) and the skybox
      float skyX = -(vPosition.x / vPosition.w) * 0.7;
@@ -213,10 +215,18 @@ void main(void) {
        // iGlobalTime
        float angle = atan(newY,newX)+iGlobalTime/2000.0;
        float luminosity = sin(angle*1.0)+sin(angle*2.0)+cos(angle*3.0)+sin(angle*4.0);
-       finalColor += (luminosity+4.0)/8.0 * vec4(1.0, 1.0, 0.0, 0.8) / pow(abs(dist), 5.0);
-       //vec2 normalized = normalize(vec2(newX,newY))*iRadius;
-       //finalColor = vec4(colorFromTextures(L, planetPosition.z, normalized.x, normalized.y, rotationVector), 1.0);
-       //finalColor = vec4(,normalized.y,0.0,1.0);
+
+       vec2 normalized = normalize(vec2(newX,newY));
+       rotationVector = rotYMatrix * rotXMatrix * vec4(normalized.x, normalized.y, 0.01, 1.0);
+       vec4 textureColor = vec4(colorFromTextures(L, planetPosition.z-0.1, normalized.x, normalized.y, rotationVector), 1.0);
+
+       //finalColor += (luminosity+4.0)/8.0 * vec4(1.0, 1.0, 0.0, 0.8) / pow(abs(dist), 5.0);
+       finalColor += (luminosity+4.0)/8.0 * textureColor / pow(abs(dist), 5.0);
+       // float luminosityToPi = luminosity / 2.0 * M_PI;
+       // float luminosity2 = sin(luminosityToPi*1.0)+sin(luminosityToPi*2.0)+cos(luminosityToPi*3.0)+sin(luminosityToPi*4.0);
+       //finalColor += (luminosity2+4.0)/8.0 * textureColor / pow(abs(dist), 5.0);
+
+       //finalColor = vec4(oppZ,0.0,0.0,1.0);
      }
    }
    //If we are meant to draw the primitives of the tetrahedron, we simply draw it
