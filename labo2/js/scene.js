@@ -88,7 +88,6 @@ function showContainer() {
 
 }
 
-
 function drawScene() {
   //Clearing the previous render based on co
   glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
@@ -115,7 +114,6 @@ $(function() {
   });
 });
 
-
 function cameraFct() {
   translationMat = mat4.create();
   mat4.identity(translationMat);
@@ -132,7 +130,6 @@ function cameraFct() {
   glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
   glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.multiply(mat4.create(), translationMat, mvMatrix));
 }
-
 
 //Initialisation of the webgl context
 function initWebGL() {

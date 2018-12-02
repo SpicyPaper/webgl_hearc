@@ -326,35 +326,21 @@ void main(void) {
      }
 
      if (dist <= 2.0) {
-       // iGlobalTime
-       float angle = atan(newY,newX)+M_PI;//+iGlobalTime/100000.0;
-       float angle2 = angle + iGlobalTime/10000.0;
-       float luminosity = sin(angle2*1.0)+sin(angle2*2.0)+cos(angle2*3.0)+sin(angle2*4.0);
+       //Calc angle 
+       float angle = atan(newY,newX)+M_PI;
+       float intensity = pnoise(vec2(angle/M_PI*5.0,iGlobalTime/2000.0),vec2(10.0,250.0))*2.0;
 
-       //float luminosity2 = noise(vec2(sin(angle/2.)*3.,iGlobalTime/1000.0))*2.0;
-       float luminosity2 = pnoise(vec2(angle/M_PI*5.0,iGlobalTime/2000.0),vec2(10.0,250.0))*2.0;
-
-       float luminosity3 = (luminosity2+1.0)/2.0*0.7+0.3;
-       luminosity2 = (luminosity2+1.0)/2.0*0.5+0.5;
+       float luminosity1 = (intensity+1.0)/2.0*0.5+0.5;
+       float luminosity2 = (intensity+1.0)/2.0*0.7+0.3;
 
        vec2 normalized = normalize(vec2(newX,newY));
        rotationVector = rotYMatrix * rotXMatrix * vec4(normalized.x, normalized.y, 0.01, 1.0);
        vec4 textureColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
 
-       //finalColor += luminosity2 * vec4(1.0, 1.0, 1.0, 0.0);
-
        // Final add halo
-       //float intensity = (textureColor.x + textureColor.y)/2.0;
-       //finalColor += (luminosity+4.0)/8.0 * vec4(1.0, 1.0, 0.0, 0.8) / pow(abs(dist), 5.0) / 2.0;
-       // finalColor += (luminosity+4.0)/8.0 * textureColor / pow(abs(dist), 5.0);
        float dissipationValue = 8.0;
-       finalColor += luminosity2 * vec4(1.0, 1.0, 0.0, 0.8) / pow(abs(dist), dissipationValue) / 2.0;
-       finalColor += luminosity3 * textureColor / pow(abs(dist), dissipationValue);
-       // float luminosityToPi = luminosity / 2.0 * M_PI;
-       // float luminosity2 = sin(luminosityToPi*1.0)+sin(luminosityToPi*2.0)+cos(luminosityToPi*3.0)+sin(luminosityToPi*4.0);
-       //finalColor += (luminosity2+4.0)/8.0 * textureColor / pow(abs(dist), 5.0);
-
-       //finalColor = vec4((luminosity2+1.0)/2.0*0.8+0.2,0.0,0.0,1.0);
+       finalColor += luminosity1 * vec4(1.0, 1.0, 0.0, 0.6) / pow(abs(dist), dissipationValue) / 2.0;
+       finalColor += luminosity2 * textureColor / pow(abs(dist), dissipationValue);
      }
    }
    //If we are meant to draw the primitives of the tetrahedron, we simply draw it

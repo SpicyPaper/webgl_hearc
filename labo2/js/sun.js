@@ -26,7 +26,6 @@ class Sun {
     this.init();
   }
 
-
   //Getter/setter for drawTetra
   set drawTetra(draw) {
     this._drawTetra = draw;
@@ -71,7 +70,6 @@ class Sun {
     this.indexTetraBuffer = getIndexBufferWithIndices(this.indicesTetra);
     this.textureCoordsBuffer = getArrayBufferWithArray(this.textureCoords);
     this.indexBuffer = getIndexBufferWithIndices(this.indices);
-
   }
 
   //Draw method of the planet object

@@ -248,6 +248,5 @@ function calculateTangents(vs, tc, ind) {
     ts.push(tan[2]);
 
   }
-
   return ts;
 }
