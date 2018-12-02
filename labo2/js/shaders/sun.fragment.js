@@ -305,7 +305,7 @@ void main(void) {
    if (dist <= 1.0) {
    //   Retrives the color for the current fragment
      finalColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
-   //   If we are not on "earth"
+   //   If we are not on "the sun"
    } else {
      //We draw the halo (Orange halo) and the skybox
      float skyX = -(vPosition.x / vPosition.w) * 0.7;
@@ -347,8 +347,9 @@ void main(void) {
        //float intensity = (textureColor.x + textureColor.y)/2.0;
        //finalColor += (luminosity+4.0)/8.0 * vec4(1.0, 1.0, 0.0, 0.8) / pow(abs(dist), 5.0) / 2.0;
        // finalColor += (luminosity+4.0)/8.0 * textureColor / pow(abs(dist), 5.0);
-       finalColor += luminosity2 * vec4(1.0, 1.0, 0.0, 0.8) / pow(abs(dist), 5.0) / 2.0;
-       finalColor += luminosity3 * textureColor / pow(abs(dist), 5.0);
+       float dissipationValue = 8.0;
+       finalColor += luminosity2 * vec4(1.0, 1.0, 0.0, 0.8) / pow(abs(dist), dissipationValue) / 2.0;
+       finalColor += luminosity3 * textureColor / pow(abs(dist), dissipationValue);
        // float luminosityToPi = luminosity / 2.0 * M_PI;
        // float luminosity2 = sin(luminosityToPi*1.0)+sin(luminosityToPi*2.0)+cos(luminosityToPi*3.0)+sin(luminosityToPi*4.0);
        //finalColor += (luminosity2+4.0)/8.0 * textureColor / pow(abs(dist), 5.0);
