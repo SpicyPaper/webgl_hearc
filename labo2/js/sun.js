@@ -36,14 +36,13 @@ class Sun {
     return this._drawTetra;
   }
 
-
   swapDrawTetra() {
     this._drawTetra = !this._drawTetra;
   }
 
-  //Initialisation method of a planet object
+  //Initialisation method of a sun object
   init() {
-    //Initialisation of time variables to handle planet rotation
+    //Initialisation of time variables to handle sun rotation
     this.timeBegin = new Date().getTime();
 
     //Initialisation of the arrays
@@ -99,7 +98,7 @@ class Sun {
     glContext.uniform1i(prg.colorTextureUniform, 6);
     glContext.texParameteri(glContext.TEXTURE_2D, glContext.TEXTURE_WRAP_S, glContext.REPEAT);
 
-    //Planet normal texture
+    //Sun normal texture
     glContext.activeTexture(glContext.TEXTURE1);
     glContext.bindTexture(glContext.TEXTURE_2D, this.normalTexture);
     glContext.uniform1i(prg.normalTextureUniform, 1);
@@ -125,7 +124,7 @@ class Sun {
     //Disable primitive drawing to draw the sun
     glContext.uniform1i(prg.drawPrimitveUniform, 0);
 
-    //Index and draw planet
+    //Index and draw Sun
     glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     glContext.drawElements(glContext.TRIANGLE_STRIP, this.indices.length, glContext.UNSIGNED_SHORT, 0);
 
@@ -138,6 +137,5 @@ class Sun {
       glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, this.indexTetraBuffer);
       glContext.drawElements(glContext.LINE_STRIP, this.indicesTetra.length, glContext.UNSIGNED_SHORT, 0);
     }
-
   }
 }

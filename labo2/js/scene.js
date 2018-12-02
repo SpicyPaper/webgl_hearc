@@ -10,12 +10,8 @@ var pMatrix = mat4.create();
 //Creation of a global array to store the objectfs drawn in the scene
 var sceneObjects = [];
 
-//Creation of a global array to store the orbits between planets
-var orbits = [];
-
 var rotationX = 0.0;
 var rotationY = 0.0;
-
 
 var tz = 2.0;
 
@@ -56,34 +52,17 @@ function initScene() {
   var skyTextureTab = [];
 
   //New textures
-  // initTextureWithImage("ressources/8k_earth_daymap.jpg", earthTextureTab); //Loads the colorTexture
-  // initTextureWithImage("ressources/8k_earth_specular_map.jpg", earthTextureTab); //Loads the specular texture
-  // initTextureWithImage("ressources/8k_earth_normal_map.jpg", earthTextureTab); //Loads the normal texture
-  // initTextureWithImage("ressources/8k_earth_nightmap.jpg", earthTextureTab); // Loads the night texture
-  // initTextureWithImage("ressources/8k_earth_clouds.jpg", earthTextureTab); // Loads the night texture
-  initTextureWithImage("ressources/sky.jpg", skyTextureTab); // Loads the sky texture
+  initTextureWithImage("ressources/sky.jpg", skyTextureTab); // Loads the sky texture (background)
 
-  //initTextureWithImage("ressources/8k_moon.jpg", moonTextureTab); // Loads the night texture
   initTextureWithImage("ressources/4k_sun.jpg", sunTextureTab); // laods the base sun texture
   initTextureWithImage("ressources/4k_sun_normal_map.jpg", sunTextureTab); // Loads the normal sun texture
   initTextureWithImage("ressources/4k_sun_specular_map.jpg", sunTextureTab); // Loads the specular sun texture
 
-  //Creation of the earth instance
-  // earth diameter: 12 742 km -> 1
-  // moon diameter: 3 474 km -> ~1/4
-  // moon-earth : 384 400 km -> ~30
-  //let earth = new Planet("Earth", 1.0, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], skyTextureTab[0]);
+  //Creation of the sun instance
   let sun = new Sun("The Sun", 1.0, sunTextureTab[0], sunTextureTab[1], sunTextureTab[2], skyTextureTab[0]);
 
-  // This doesn't work:
-  //let moon = new Planet("Moon", 0.25, earthTextureTab[0], earthTextureTab[1], earthTextureTab[2], earthTextureTab[3], earthTextureTab[4], skyTextureTab[0]);
-  //let orbit = new Orbit(earth, moon, 30, 27);
-
-  //Creation of the moon instance
-  //sceneObjects.push(moon);
-  //sceneObjects.push(earth);
+  //adding the sun to the scene objects
   sceneObjects.push(sun);
-  //orbits.push(orbit);
 
   //Enabling the depth test
   glContext.enable(glContext.DEPTH_TEST);
