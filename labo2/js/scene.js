@@ -105,8 +105,12 @@ function drawScene() {
 $(function() {
   $(document.getElementById("webgl-canvas")).on('wheel', function(e) {
     var delta = e.originalEvent.deltaY;
-    if (delta > 0) tz = tz + 0.1;
-    else tz = tz - 0.1;
+    if (delta > 0) {
+      tz *= 1.05;
+    }
+    else {
+      tz /= 1.05;
+    }
     return false;
   });
 });
