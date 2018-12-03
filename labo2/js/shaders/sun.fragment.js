@@ -21,6 +21,9 @@ uniform float iZ;
 uniform int uDrawPrimitive;
 uniform float iRotX;
 uniform float iRotY;
+uniform vec4 uTexturesVector;
+uniform vec3 uHalosVector;
+uniform vec3 uHalosMultVector;
 
 varying vec4 vPosition;
 varying vec3 vLightpos;
@@ -92,7 +95,7 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
  vec3 txlClrFinalHigh = vec3(txlClr4);
  vec3 txlClrFinalMid = vec3((txlClr0 + txlClr1 + txlClr2 + txlClr3 + txlClr4 + txlClr5 + txlClr6 + txlClr7 + txlClr8) / 9.0);
  vec3 txlClrFinalLow = vec3((txlClr0 + txlClr1 + txlClr2 + txlClr3 + txlClr4 + txlClr5 + txlClr6 + txlClr7 + txlClr8 + txlClr9 + txlClr10 + txlClr11 + txlClr12 + txlClr13 + txlClr14 + txlClr15 + txlClr16 + txlClr17 + txlClr18 + txlClr19 + txlClr20 + txlClr21 + txlClr22 + txlClr23 + txlClr24) / 25.0);
- vec3 txlClrFinal = txlClrFinalLow;
+ vec3 txlClrFinal;
 
  if (iZ > 2.0) {
    txlClrFinal = txlClrFinalHigh;
@@ -107,36 +110,41 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
  float vClouds = 0.5 + asin(rotationVector.y) / 3.14159;
  vec2 mapCoordClouds = vec2(uClouds, vClouds);
 
- vec3 texelColor = texture2D(uColorTexture, mapCoord).rgb;
- vec3 texelSpecular = texture2D(uSpecularTexture, mapCoord).rgb;
- // vec3 texelNight = texture2D(uNightTexture, mapCoord).rgb;
- // vec3 texelAtmo = texture2D(uAtmoTexture, mapCoordClouds).rgb;
- vec3 texelNormal = txlClrFinal * 2.0 - 1.0;
- // float cloudy = sqrt(texelAtmo.x * texelAtmo.x + texelAtmo.y * texelAtmo.y + texelAtmo.z * texelAtmo.z);
+ vec3 texelColor;
+ if(uTexturesVector.x == 1.0) {
+   texelColor = texture2D(uColorTexture, mapCoord).rgb;
+ } else {
+   texelColor = vec3(0.8, 0.8, 0.8);
+ }
 
- // texelColor += texelAtmo;
+ vec3 texelSpecular;
+ if(uTexturesVector.z == 1.0) {
+   texelSpecular = texture2D(uSpecularTexture, mapCoord).rgb;
+ } else {
+  texelSpecular = vec3(0.3, 0.3, 0.3);
+ }
 
- vec3 N = normalize(texelNormal);
+ vec3 texelNormal;
+ if(uTexturesVector.y == 1.0) {
+  texelNormal = txlClrFinal * 2.0 - 1.0;
+ } else {
+  texelNormal = vec3(0.0, 0.0, 1.0);
+ }
 
- // if (cloudy > 1.0) {
- //   N = vec3(0.0, 0.0, 1.0);
- // }
+ vec3 finalColor = vec3(1.0, 1.0, 1.0);
 
- vec3 E = normalize(vec3(-newX, -newY, oppZ));
- vec3 R = reflect(-L, N);
- //float shadow = max(dot(R, E), 0.0);
+ if(uTexturesVector.z == 1.0 || uTexturesVector.y == 1.0) {
+   vec3 N = normalize(texelNormal);
 
- vec3 finalColor = vec3(1.0, 1.0, 1.0);// * shadow;
+   vec3 E = normalize(vec3(-newX, -newY, oppZ));
+   vec3 R = reflect(-L, N);
 
- float lambertTerm = max(dot(N, L), 0.0);
- float specular = pow(abs(max(dot(R, E), 0.0)), 32.0) * lambertTerm;
+   float lambertTerm = max(dot(N, L), 0.0);
+   float specular = pow(abs(max(dot(R, E), 0.0)), 32.0) * lambertTerm;
 
- //if (shadow < 0.2) {
- //   float fade = shadow < 0.0 ? 1.0 - lambertTerm * -10.0 : 1.0;
- //   finalColor += texelNight * length(texelNight) * fade / 1.5;
- //}
-
- finalColor += specular * texelSpecular;
+   finalColor += specular * texelSpecular;
+ 
+ }
 
  finalColor *= texelColor;
 
@@ -318,14 +326,18 @@ void main(void) {
      vec2 mapCoordSky = vec2(uSky, vSky);
      vec3 texelSky = texture2D(uSkyTexture, mapCoordSky).rgb;
 
-     finalColor *= vec4(texelSky, 1.0);
-
-     //Halo lumineux global
-     if (dist <= 20.0) {
-       finalColor += vec4(0.5, 0.2, 0.1, 0.8) / pow(abs(dist), 2.0);
+     if(uTexturesVector.a == 1.0) {
+       finalColor *= vec4(texelSky, 1.0);
+     } else {
+       finalColor *= vec4(0.0, 0.0, 0.0, 1.0);
      }
 
-     if (dist <= 3.0) {
+     //Halo lumineux global
+     if (dist <= 20.0 && uHalosVector.x == 1.0) {
+       finalColor += vec4(0.5, 0.2, 0.1, 0.8) / pow(abs(dist), 2.0 * uHalosMultVector.x);
+     }
+
+     if (dist <= 6.0) {
        //Calc angle 
        float angle = atan(newY,newX)+M_PI;
        float intensity = pnoise(vec2(angle/M_PI*5.0,iGlobalTime/2000.0),vec2(10.0,250.0))*2.0;
@@ -338,9 +350,14 @@ void main(void) {
        vec4 textureColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
 
        // Final add halo
-       float dissipationValue = 8.0;
-       finalColor += luminosity1 * vec4(1.0, 1.0, 0.0, 0.6) / pow(abs(dist), dissipationValue) / 2.0;
-       finalColor += luminosity2 * textureColor / pow(abs(dist), dissipationValue);
+       float dissipationValue = 5.0;
+       if(uHalosVector.y == 1.0) {
+         finalColor += luminosity1 * vec4(1.0, 1.0, 0.0, 0.6) / pow(abs(dist), dissipationValue * uHalosMultVector.y) / 2.0;
+       }
+
+       if(uHalosVector.z == 1.0) {
+         finalColor += luminosity2 * textureColor / pow(abs(dist), dissipationValue * uHalosMultVector.z);
+       }
      }
    }
    //If we are meant to draw the primitives of the tetrahedron, we simply draw it

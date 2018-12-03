@@ -7,6 +7,12 @@
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
 
+//Creation of 2 global vector to store which textures and halos will be drawn.
+var texturesVector = vec4.fromValues(1.0, 1.0, 1.0, 1.0);
+var halosVector = vec3.fromValues(1.0, 1.0, 1.0);
+
+var halosMult = vec3.fromValues(1.0, 1.0, 1.5);
+
 //Creation of a global array to store the objectfs drawn in the scene
 var sceneObjects = [];
 
@@ -14,6 +20,8 @@ var rotationX = 0.0;
 var rotationY = 0.0;
 
 var tz = 2.0;
+
+var isContainerActivated = false;
 
 //Initialisation of the shader parameters, this very important method creates the links between the javascript and the shader.
 function initShaderParameters(prg) {
@@ -28,6 +36,12 @@ function initShaderParameters(prg) {
   //Matrices
   prg.pMatrixUniform = glContext.getUniformLocation(prg, 'uPMatrix');
   prg.mvMatrixUniform = glContext.getUniformLocation(prg, 'uMVMatrix');
+
+  //Vector
+  prg.texturesUniform = glContext.getUniformLocation(prg, 'uTexturesVector');
+  prg.halosUniform = glContext.getUniformLocation(prg, 'uHalosVector');
+  prg.halosMultUniform = glContext.getUniformLocation(prg, 'uHalosMultVector');
+
   //Textures
   prg.colorTextureUniform = glContext.getUniformLocation(prg, "uColorTexture");
   prg.normalTextureUniform = glContext.getUniformLocation(prg, "uNormalTexture");
@@ -84,11 +98,11 @@ function initScene() {
 }
 
 function showContainer() {
+  isContainerActivated = !isContainerActivated;
   for (var i = 0; i < sceneObjects.length; i++) {
     //Swaping the drawing of the tetra
     sceneObjects[i].swapDrawTetra();
   }
-
 }
 
 function drawScene() {
@@ -132,6 +146,9 @@ function cameraFct() {
   glContext.uniform1f(prg.rotYUniform, rotationY);
   glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
   glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.multiply(mat4.create(), translationMat, mvMatrix));
+  glContext.uniform4fv(prg.texturesUniform, texturesVector);
+  glContext.uniform3fv(prg.halosUniform, halosVector);
+  glContext.uniform3fv(prg.halosMultUniform, halosMult);
 }
 
 //Initialisation of the webgl context
