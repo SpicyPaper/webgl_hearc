@@ -57,9 +57,9 @@ function initScene() {
   //New textures
   initTextureWithImage("ressources/sky.jpg", skyTextureTab); // Loads the sky texture (background)
 
-  initTextureWithImage("ressources/4k_sun.jpg", sunTextureTab); // laods the base sun texture
-  initTextureWithImage("ressources/4k_sun_normal_map.jpg", sunTextureTab); // Loads the normal sun texture
-  initTextureWithImage("ressources/4k_sun_specular_map.jpg", sunTextureTab); // Loads the specular sun texture
+  initTextureWithImage("ressources/8k_sun.jpg", sunTextureTab); // laods the base sun texture
+  initTextureWithImage("ressources/8k_sun_normal_map.jpg", sunTextureTab); // Loads the normal sun texture
+  initTextureWithImage("ressources/8k_sun_specular_map.jpg", sunTextureTab); // Loads the specular sun texture
 
   //Creation of the sun instance
   let sun = new Sun("The Sun", 1.0, sunTextureTab[0], sunTextureTab[1], sunTextureTab[2], skyTextureTab[0]);
