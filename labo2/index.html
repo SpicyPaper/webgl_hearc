@@ -18,6 +18,8 @@
 
     <script src="./js/sun.js"></script>
     <script src="./js/scene.js"></script>
+
+    <title>WebGL - Labo 2 - Sun</title>
 </head>
 <!-- initialize webgl onload -->
 
@@ -29,29 +31,44 @@
                 <p>Equipe n°1 - Novembre 2018</p>
                 <p>Donzé Célien - Wermeille Bastien - Wohlfahrt Alexander</p>
                 <hr>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <!-- webgl canvas -->
+                <canvas id="webgl-canvas" width="600" height="600">
+                    HTML5 is not supported
+                </canvas>
+            </div>
+            <div class="col-12 col-lg-4">
+                <h3>Options</h3>
+                <!-- Show tetra button -->
+                <button id="showContainerButton" class="btn btn-lg btn-outline-dark" onclick="showContainer()">Show container</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
                 <h2>Summary</h2>
                 <p>The aim of this project is to create a 3D sun with 4 triangles and texturing.</p>
                 <hr>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
                 <h2>Description</h2>
-                <p>This project took place during the course "Infogragphie" at the <a href="https://www.he-arc.ch/">High Specialized school ARC</a> in Neuchâtel.</p>
-                <p>We started our project from the base of this project <a ref="http://webgl3d.info/ex/guideline/7/index.html">Notre jolie maison</a>.</p>
+                <p>This project took place during the course "Infogragphie" at the <a href="https://www.he-arc.ch/">Haute école ARC</a> in Neuchâtel.</p>
+                <p>We started our project from the base of this project <a href="http://webgl3d.info/ex/guideline/7/index.html">Notre jolie maison</a>.</p>
                 <p>Here are some of the most consuming tasks we went through:</p>
                 <ol>
                     <li>Study code and learn what is doing what</li>
                     <li>Adapt the code to a single color texture</li>
-                    <li>Create a normal texture map with this <a>TODO link to the tools</a></li>
-                    <li>Create a specular map with <a>TODO link to the tools</a></li>
+                    <li>Create a normal texture map with this <a href="http://cpetry.github.io/NormalMap-Online/">Website</a></li>
+                    <li>Create a specular map with <a href="http://cpetry.github.io/NormalMap-Online/">Website</a></li>
                     <li>Clean of code to remove all the useless code</li>
                     <li>Create a basic large halo</li>
                     <li>Create a close continuous orange luminous halo</li>
-                    <li>Add a halo which has the same color as the texture closest to the border</li>
+                    <li>Add a halo which has the same color as the closest pixel of the sun color texture to the border</li>
                     <li>Improve halo to make it more realistic with a periodic 2d Perlin noise for its intensity</li>
                     <li>Clean of code</li>
-                    <li>Add interaction to users</li>
+                    <li>Add interactions for the users, they can understand what is doing each texture and halo</li>
                 </ol>
                 <h3>Textures</h3>
                 <p>The texture of the sun we used is free to use and under </p>
@@ -59,30 +76,17 @@
                 <p>TODO</p>
             </div>
         </div>
-        
-        <div class="row">
-            <div class="col-8">
-                <h3>Rendu</h3>
-                <!-- webgl canvas -->
-                <canvas id="webgl-canvas" width="700" height="700">
-                    HTML5 is not supported
-                </canvas>
-            </div>
-            <div class="col-4">
-                <h3>Options</h3>
-                <!-- Show tetra button -->
-                <button id="showContainerButton" class="btn btn-lg btn-outline-secondary" onclick="showContainer()">Show container</button>
-            </div>
-        </div>
+
         <div class="row">
             <div class="col-12">
                 <hr>
                 <h2>Ressources</h2>
                 <ul class="a-autoFill">
-                    <li><a href="https://github.com/ashima/webgl-noise/blob/master/src/classicnoise2D.glsl"></a>TODO add mit licence</li>
-                    <li><a href="https://thebookofshaders.com/"></a> Usefull book to learn more about fragment shader</li>
+                    <li><a href="https://github.com/ashima/webgl-noise/blob/master/src/classicnoise2D.glsl">Code for Perlin nose on Github.com</a>, Copyright (c) 2011 Stefan Gustavson. All rights reserved.</li>
+                    <li><a href="http://cpetry.github.io/NormalMap-Online/">Website</a> that generate normal and specular map from an image</li>
+                    <li><a href="https://thebookofshaders.com/">The book of shaders</a>, Usefull book to learn more about fragment shader</li>
+                    <li><a href="https://www.ppur.org/produit/721/9782889150939/WebGL%20par%20la%20pratique%20">WebGL par la pratique.</a> Stéphane Gobron, Mario Gutiérrez, Presses polytechniques et universitaires romandes. 2015</li>
                 </ul>
-                TODO Add reference to his book
             </div>
         </div>
         <br/>

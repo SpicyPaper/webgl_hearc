@@ -1,7 +1,0 @@
-/**
- *	CSS made especially for this project
- */
-
-.a-autoFill a:after {
-	content: attr(href);
-}
