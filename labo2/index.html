@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="css/stylesheet.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
@@ -28,14 +29,41 @@
                 <p>Equipe n°1 - Novembre 2018</p>
                 <p>Donzé Célien - Wermeille Bastien - Wohlfahrt Alexander</p>
                 <hr>
-                <h2>Description</h2>
-                <p>The aim of this project is to create a 3D sun with 4 triangles and texturing</p>
+                <h2>Summary</h2>
+                <p>The aim of this project is to create a 3D sun with 4 triangles and texturing.</p>
                 <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h2>Description</h2>
+                <p>This project took place during the course "Infogragphie" at the <a href="https://www.he-arc.ch/">High Specialized school ARC</a> in Neuchâtel.</p>
+                <p>We started our project from the base of this project <a ref="http://webgl3d.info/ex/guideline/7/index.html">Notre jolie maison</a>.</p>
+                <p>Here are some of the most consuming tasks we went through:</p>
+                <ol>
+                    <li>Study code and learn what is doing what</li>
+                    <li>Adapt the code to a single color texture</li>
+                    <li>Create a normal texture map with this <a>TODO link to the tools</a></li>
+                    <li>Create a specular map with <a>TODO link to the tools</a></li>
+                    <li>Clean of code to remove all the useless code</li>
+                    <li>Create a basic large halo</li>
+                    <li>Create a close continuous orange luminous halo</li>
+                    <li>Add a halo which has the same color as the texture closest to the border</li>
+                    <li>Improve halo to make it more realistic with a periodic 2d Perlin noise for its intensity</li>
+                    <li>Clean of code</li>
+                    <li>Add interaction to users</li>
+                </ol>
+                <h3>Textures</h3>
+                <p>TODO</p>
+                <h3>Halo</h3>
+                <p>TODO</p>
             </div>
         </div>
         
         <div class="row">
             <div class="col-8">
+                <h3>Rendu</h3>
                 <!-- webgl canvas -->
                 <canvas id="webgl-canvas" width="700" height="700">
                     HTML5 is not supported
@@ -43,11 +71,21 @@
             </div>
             <div class="col-4">
                 <h3>Options</h3>
-                <button id="showContainerButton" class="btn btn-lg btn-default" onclick="showContainer()">Show container</button>
+                <!-- Show tetra button -->
+                <button id="showContainerButton" class="btn btn-lg btn-outline-secondary" onclick="showContainer()">Show container</button>
             </div>
         </div>
-
-        <!-- Show tetra button -->
+        <div class="row">
+            <div class="col-12">
+                <hr>
+                <h2>Ressources</h2>
+                <ul class="a-autoFill">
+                    <li><a href=""></a></li>
+                    <li><a href="https://thebookofshaders.com/"></a> Usefull book to learn more about fragment shader</li>
+                </ul>
+                TODO Add reference to his book
+            </div>
+        </div>
         <br/>
     </div>
 
