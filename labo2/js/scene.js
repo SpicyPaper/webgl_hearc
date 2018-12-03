@@ -43,6 +43,9 @@ function initShaderParameters(prg) {
   prg.tzUniform = glContext.getUniformLocation(prg, "iZ");
   prg.rotXUniform = glContext.getUniformLocation(prg, "iRotX");
   prg.rotYUniform = glContext.getUniformLocation(prg, "iRotY");
+
+  //Ajout des paramètres
+  //TODO
 }
 
 //Initialisation of the scene

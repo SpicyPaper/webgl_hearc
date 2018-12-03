@@ -325,7 +325,7 @@ void main(void) {
        finalColor += vec4(0.5, 0.2, 0.1, 0.8) / pow(abs(dist), 2.0);
      }
 
-     if (dist <= 2.0) {
+     if (dist <= 3.0) {
        //Calc angle 
        float angle = atan(newY,newX)+M_PI;
        float intensity = pnoise(vec2(angle/M_PI*5.0,iGlobalTime/2000.0),vec2(10.0,250.0))*2.0;
