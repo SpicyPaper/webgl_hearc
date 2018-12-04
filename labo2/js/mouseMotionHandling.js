@@ -58,17 +58,7 @@ var currentRy = 0; //keeps the current rotation on y, used to keep the billboard
 function rotateModelViewMatrixUsingQuaternion(stop) {
 
   stop = typeof stop !== 'undefined' ? stop : false;
-  //use quaternion rotations for the rotation of the object with the mouse
-  /*angle = degToRad(rotY);
-	currentRy += angle;
-	rotYQuat = quat.create([0, Math.sin(angle/2), 0, Math.cos(angle/2)]);
 
-	angle = degToRad(rotX);
-	rotXQuat = quat4.create([Math.sin(angle/2), 0, 0, Math.cos(angle/2)]);
-
-	myQuaternion = quat4.multiply(rotYQuat, rotXQuat);
-	mvMatrix = mat4.multiply(quat4.toMat4( myQuaternion ), mvMatrix);
-*/
   rx = degToRad(rotX);
   ry = degToRad(rotY);
 

@@ -9,18 +9,15 @@ uniform sampler2D uColorTexture;
 
 uniform sampler2D uNormalTexture;
 uniform sampler2D uSpecularTexture;
-// uniform sampler2D uNightTexture;
-// uniform sampler2D uAtmoTexture;
-// uniform sampler2D uAtmoNormalTexture;
 uniform sampler2D uSkyTexture;
 
 uniform mat4 uMVMatrix;
 uniform float iGlobalTime;
 uniform float iRadius;
-uniform float iZ;
-uniform int uDrawPrimitive;
 uniform float iRotX;
 uniform float iRotY;
+uniform float iZ;
+uniform int uDrawPrimitive;
 uniform vec4 uTexturesVector;
 uniform vec3 uHalosVector;
 uniform vec3 uHalosMultVector;
@@ -143,7 +140,6 @@ vec3 colorFromTextures(vec3 L, float oppZ, float newX, float newY, vec4 rotation
    float specular = pow(abs(max(dot(R, E), 0.0)), 32.0) * lambertTerm;
 
    finalColor += specular * texelSpecular;
- 
  }
 
  finalColor *= texelColor;
@@ -182,46 +178,6 @@ vec4 taylorInvSqrt(vec4 r)
 
 vec2 fade(vec2 t) {
   return t*t*t*(t*(t*6.0-15.0)+10.0);
-}
-
-// Classic Perlin noise
-float cnoise(vec2 P)
-{
-  vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
-  vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
-  Pi = mod289(Pi); // To avoid truncation effects in permutation
-  vec4 ix = Pi.xzxz;
-  vec4 iy = Pi.yyww;
-  vec4 fx = Pf.xzxz;
-  vec4 fy = Pf.yyww;
-
-  vec4 i = permute(permute(ix) + iy);
-
-  vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
-  vec4 gy = abs(gx) - 0.5 ;
-  vec4 tx = floor(gx + 0.5);
-  gx = gx - tx;
-
-  vec2 g00 = vec2(gx.x,gy.x);
-  vec2 g10 = vec2(gx.y,gy.y);
-  vec2 g01 = vec2(gx.z,gy.z);
-  vec2 g11 = vec2(gx.w,gy.w);
-
-  vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
-  g00 *= norm.x;
-  g01 *= norm.y;
-  g10 *= norm.z;
-  g11 *= norm.w;
-
-  float n00 = dot(g00, vec2(fx.x, fy.x));
-  float n10 = dot(g10, vec2(fx.y, fy.y));
-  float n01 = dot(g01, vec2(fx.z, fy.z));
-  float n11 = dot(g11, vec2(fx.w, fy.w));
-
-  vec2 fade_xy = fade(Pf.xy);
-  vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
-  float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
-  return 2.3 * n_xy;
 }
 
 // Classic Perlin noise, periodic variant
@@ -275,10 +231,10 @@ void main(void) {
  float adjXY = sqrt(newX * newX + newY * newY);
  float oppZ = sqrt(iRadius * iRadius - adjXY * adjXY);
 
- //Defines a new position for the planet
- vec4 planetPosition = vec4(newX, newY, oppZ, 1.0);
+ //Defines a new position for the sun
+ vec4 sunPosition = vec4(newX, newY, oppZ, 1.0);
 
- //Calculates the distance between the camera Z and the planet radius
+ //Calculates the distance between the camera Z and the sun radius
  float dist = adjXY / iRadius;
 
  float rotY = iRotY;
@@ -302,17 +258,17 @@ void main(void) {
  rotYMatrix[3] = vec4(0.0, 0.0, 0.0, 1.0);
 
  //Defines the rotation vector
- vec4 rotationVector = rotYMatrix * rotXMatrix * vec4(planetPosition.x, planetPosition.y, planetPosition.z, 1.0);
+ vec4 rotationVector = rotYMatrix * rotXMatrix * vec4(sunPosition.x, sunPosition.y, sunPosition.z, 1.0);
  //By default, the final color is white
  vec4 finalColor = vec4(1.0, 1.0, 1.0, 1.0);
  //We define the light vector
- vec3 L = normalize(vLightpos - vec3(planetPosition.x, planetPosition.y, planetPosition.z));
- //If we are meant to draw the planet
+ vec3 L = normalize(vLightpos - vec3(sunPosition.x, sunPosition.y, sunPosition.z));
+ //If we are meant to draw the sun
  if (uDrawPrimitive == 0) {
-   //If we are within the planet
+   //If we are within the sun
    if (dist <= 1.0) {
    //   Retrives the color for the current fragment
-     finalColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
+     finalColor = vec4(colorFromTextures(L, sunPosition.z, sunPosition.x, sunPosition.y, rotationVector), 1.0);
    //   If we are not on "the sun"
    } else {
      //We draw the halo (Orange halo) and the skybox
@@ -342,28 +298,28 @@ void main(void) {
        float angle = atan(newY,newX)+M_PI;
        float intensity = pnoise(vec2(angle/M_PI*5.0,iGlobalTime/2000.0),vec2(10.0,250.0))*2.0;
 
-       float luminosity1 = (intensity+1.0)/2.0*0.5+0.5;
-       float luminosity2 = (intensity+1.0)/2.0*0.7+0.3;
+       float luminosityOrangeHalo = (intensity+1.0)/2.0*0.5+0.5;
+       float luminosityTextureHalo = (intensity+1.0)/2.0*0.7+0.3;
 
        vec2 normalized = normalize(vec2(newX,newY));
        rotationVector = rotYMatrix * rotXMatrix * vec4(normalized.x, normalized.y, 0.01, 1.0);
-       vec4 textureColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
+       vec4 textureColor = vec4(colorFromTextures(L, sunPosition.z, sunPosition.x, sunPosition.y, rotationVector), 1.0);
 
-       // Final add halo
+       // Final step add halo
        float dissipationValue = 5.0;
        if(uHalosVector.y == 1.0) {
-         finalColor += luminosity1 * vec4(1.0, 1.0, 0.0, 0.6) / pow(abs(dist), dissipationValue * uHalosMultVector.y) / 2.0;
+         finalColor += luminosityOrangeHalo * vec4(1.0, 1.0, 0.0, 0.6) / pow(abs(dist), dissipationValue * uHalosMultVector.y) / 2.0;
        }
 
        if(uHalosVector.z == 1.0) {
-         finalColor += luminosity2 * textureColor / pow(abs(dist), dissipationValue * uHalosMultVector.z);
+         finalColor += luminosityTextureHalo * textureColor / pow(abs(dist), dissipationValue * uHalosMultVector.z);
        }
      }
    }
    //If we are meant to draw the primitives of the tetrahedron, we simply draw it
  } else if (uDrawPrimitive == 1) {
    if (dist < 1.0 && iZ < vPosition.z) {
-     finalColor = vec4(colorFromTextures(L, planetPosition.z, planetPosition.x, planetPosition.y, rotationVector), 1.0);
+     finalColor = vec4(colorFromTextures(L, sunPosition.z, sunPosition.x, sunPosition.y, rotationVector), 1.0);
    } else if (dist < 1.0 && iZ > vPosition.z) {
      finalColor = vColors;
    } else {

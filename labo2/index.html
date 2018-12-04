@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-12 pt-4">
                 <h1>Infographie with GLSL - Labo n°2</h1>
-                <p>Equipe n°1 - Novembre 2018</p>
+                <p>Equipe n°1 - November 2018</p>
                 <p>Donzé Célien - Wermeille Bastien - Wohlfahrt Alexander</p>
                 <hr>
             </div>
@@ -111,12 +111,12 @@
                 <div class="form-check pl-3 mt-1">
                     <label class="form-check-label" for="perlinHaloCheckbox">
                         <input id="perlinHaloCheckbox" class="form-check-input position-static m-0 mr-1" type="checkbox" onclick="swapPerlinHalo(this.checked)" checked>
-                        Perlin nose halo
+                        2D Periodic Perlin noise halo
                     </label>
                 </div>
 
                 <div class="form-group mt-1 col-12">
-                    <label for="perlinNoiseHaloRange">Perlin noise halo size</label>
+                    <label for="perlinNoiseHaloRange">2D Periodic Perlin noise halo size</label>
                     <input id="perlinNoiseHaloRange" type="range" class="custom-range" min="-3" max="0" step="0.1" value="1.5" oninput="changePerlinNoiseHaloMult(this.value)">
                 </div>
                 
@@ -146,12 +146,12 @@
                     <li>Add a halo which has the same color as the closest pixel of the sun color texture to the border</li>
                     <li>Improve halo to make it more realistic with a periodic 2d Perlin noise for its intensity</li>
                     <li>Clean of code</li>
-                    <li>Add interactions for the users, they can understand what is doing each texture and halo</li>
+                    <li>Add interactions for the users, as they can understand how we build our sun.</li>
                 </ol>
                 <h3>Textures</h3>
-                <p>The texture of the sun we used is free to use and under <a href="https://www.solarsystemscope.com/textures/">Source</a></p>
+                <p>The texture of the sun we used is free to use and is available <a href="https://www.solarsystemscope.com/textures/">Here</a>.</p>
                 <h3>Halo</h3>
-                <p>TODO</p>
+                <p>We use a Perlin 2D periodic Pelin noise for the halo in the aim a making it more realistic. The code we use is under MIT Licence and is available <a href="https://github.com/ashima/webgl-noise/blob/master/src/classicnoise2D.glsl">Here</a></p>
             </div>
         </div>
 
@@ -160,10 +160,10 @@
                 <hr>
                 <h2>Ressources</h2>
                 <ul class="a-autoFill">
-                    <li><a href="https://github.com/ashima/webgl-noise/blob/master/src/classicnoise2D.glsl">Code for Perlin nose on Github.com</a>, Copyright (c) 2011 Stefan Gustavson. All rights reserved.</li>
+                    <li><a href="https://www.ppur.org/produit/721/9782889150939/WebGL%20par%20la%20pratique%20">WebGL par la pratique.</a> Stéphane Gobron, Mario Gutiérrez, Presses polytechniques et universitaires romandes. 2015</li>
+                    <li><a href="https://github.com/ashima/webgl-noise">Code for Perlin noise on Github.com</a>, Copyright (c) 2011 Stefan Gustavson. All rights reserved.</li>
                     <li><a href="http://cpetry.github.io/NormalMap-Online/">Website</a> that generate normal and specular map from an image</li>
                     <li><a href="https://thebookofshaders.com/">The book of shaders</a>, Usefull book to learn more about fragment shader</li>
-                    <li><a href="https://www.ppur.org/produit/721/9782889150939/WebGL%20par%20la%20pratique%20">WebGL par la pratique.</a> Stéphane Gobron, Mario Gutiérrez, Presses polytechniques et universitaires romandes. 2015</li>
                 </ul>
             </div>
         </div>
