@@ -92,31 +92,28 @@
                 </div>
 
                 <div class="form-group mt-1 col-12">
-                    <label for="basicHaloRange">Basic halo size</label>
                     <input id="basicHaloRange" type="range" class="custom-range" min="-3" max="0" step="0.1" value="1.5" oninput="changebasicHaloMult(this.value)">
                 </div>
 
                 <div class="form-check pl-3 mt-1">
                     <label class="form-check-label" for="luminousHaloCheckbox">
                         <input id="luminousHaloCheckbox" class="form-check-input position-static m-0 mr-1" type="checkbox" onclick="swapLuminousHalo(this.checked)" checked>
-                        Close continuous orange luminous halo
+                        2D Periodic Perlin noise orange halo
                     </label>
                 </div>
 
                 <div class="form-group mt-1 col-12">
-                    <label for="luminousHaloRange">Orange luminous Perlin noise halo size</label>
                     <input id="luminousHaloRange" type="range" class="custom-range" min="-3" max="0" step="0.1" value="1.5" oninput="changeLuminousHaloMult(this.value)">
                 </div>
 
                 <div class="form-check pl-3 mt-1">
                     <label class="form-check-label" for="perlinHaloCheckbox">
                         <input id="perlinHaloCheckbox" class="form-check-input position-static m-0 mr-1" type="checkbox" onclick="swapPerlinHalo(this.checked)" checked>
-                        2D Periodic Perlin noise halo
+                        2D Periodic Perlin noise halo based on color texture
                     </label>
                 </div>
 
                 <div class="form-group mt-1 col-12">
-                    <label for="perlinNoiseHaloRange">2D Periodic Perlin noise halo size</label>
                     <input id="perlinNoiseHaloRange" type="range" class="custom-range" min="-3" max="0" step="0.1" value="1.5" oninput="changePerlinNoiseHaloMult(this.value)">
                 </div>
                 
