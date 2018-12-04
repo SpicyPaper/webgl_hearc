@@ -24,6 +24,10 @@ function resetTexturesAndHalosValues() {
     }
 }
 
+/**
+ * Enable / Disable the color texture
+ * @param {boolean} isChecked : true if enable, false otherwise
+ */
 function swapTextureColor(isChecked) {
     if(isChecked) {
         texturesVector[0] = 1.0;
@@ -32,6 +36,10 @@ function swapTextureColor(isChecked) {
     }
 }
 
+/**
+ * Enable / Disable the normal texture
+ * @param {boolean} isChecked : true if enable, false otherwise
+ */
 function swapTextureNormal(isChecked) {
     if(isChecked) {
         texturesVector[1] = 1.0;
@@ -40,6 +48,10 @@ function swapTextureNormal(isChecked) {
     }
 }
 
+/**
+ * Enable / Disable the specular texture
+ * @param {boolean} isChecked : true if enable, false otherwise
+ */
 function swapTextureSpecular(isChecked) {
     if(isChecked) {
         texturesVector[2] = 1.0;
@@ -48,6 +60,10 @@ function swapTextureSpecular(isChecked) {
     }
 }
 
+/**
+ * Enable / Disable the background texture
+ * @param {boolean} isChecked : true if enable, false otherwise
+ */
 function swapTextureBackground(isChecked) {
     if(isChecked) {
         texturesVector[3] = 1.0;
@@ -56,6 +72,10 @@ function swapTextureBackground(isChecked) {
     }
 }
 
+/**
+ * Enable / Disable the basic halo
+ * @param {boolean} isChecked : true if enable, false otherwise
+ */
 function swapBasicHalo(isChecked) {
     if(isChecked) {
         halosVector[0] = 1.0;
@@ -64,6 +84,10 @@ function swapBasicHalo(isChecked) {
     }
 }
 
+/**
+ * Enable / Disable the lumious halo
+ * @param {boolean} isChecked : true if enable, false otherwise
+ */
 function swapLuminousHalo(isChecked) {
     if(isChecked) {
         halosVector[1] = 1.0;
@@ -72,6 +96,10 @@ function swapLuminousHalo(isChecked) {
     }
 }
 
+/**
+ * Enable / Disable the perlin halo
+ * @param {boolean} isChecked : true if enable, false otherwise
+ */
 function swapPerlinHalo(isChecked) {
     if(isChecked) {
         halosVector[2] = 1.0;
@@ -80,14 +108,26 @@ function swapPerlinHalo(isChecked) {
     }
 }
 
+/**
+ * Change the basic halo value mult
+ * @param {float} value : new multiplicator
+ */
 function changebasicHaloMult(value) {
     halosMult[0] = -value;
 }
 
+/**
+ * Change the lumious halo value mult
+ * @param {float} value : new multiplicator
+ */
 function changeLuminousHaloMult(value) {
     halosMult[1] = -value;
 }
 
+/**
+ * Change the Perlin halo value mult
+ * @param {float} value : new multiplicator
+ */
 function changePerlinNoiseHaloMult(value) {
     halosMult[2] = -value;
 }
