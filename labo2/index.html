@@ -104,7 +104,7 @@
                 </div>
 
                 <div class="form-group mt-1 col-12">
-                    <label for="luminousHaloRange">Orange luminous halo size</label>
+                    <label for="luminousHaloRange">Orange luminous Perlin noise halo size</label>
                     <input id="luminousHaloRange" type="range" class="custom-range" min="-3" max="0" step="0.1" value="1.5" oninput="changeLuminousHaloMult(this.value)">
                 </div>
 
@@ -152,6 +152,9 @@
                 <p>The texture of the sun we used is free to use and is available <a href="https://www.solarsystemscope.com/textures/">Here</a>.</p>
                 <h3>Halo</h3>
                 <p>We use a Perlin 2D periodic Pelin noise for the halo in the aim a making it more realistic. The code we use is under MIT Licence and is available <a href="https://github.com/ashima/webgl-noise/blob/master/src/classicnoise2D.glsl">Here</a></p>
+                <h3>Remarks</h3>
+                <p>We use a specular to illuminate the sun, even if we know that sun should logically be the brighter light source.</p>
+                <p>We did that for experimental purpose. And that looks better for us</p>
             </div>
         </div>
 
